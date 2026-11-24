@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/top_bar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/surface_container_lowest"
+    android:elevation="1dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="12dp">
+
+        <ImageView
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:background="@drawable/bg_emblem_inner"
+            android:contentDescription="@string/app_official"
+            android:padding="7dp"
+            android:src="@drawable/ic_account_balance"
+            app:tint="@color/on_primary" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/inter"
+                    android:letterSpacing="-0.02"
+                    android:text="@string/app_official"
+                    android:textColor="@color/primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_marginStart="3dp"
+                    android:contentDescription="@string/official_system"
+                    android:src="@drawable/ic_verified"
+                    app:tint="@color/secondary" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/top_bar_subtitle"
+                style="@style/TextAppearance.Egob.LabelSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAllCaps="true"
+                android:textColor="@color/on_surface_variant"
+                tools:text="Billetera de documentos" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btn_assistant"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_assistant"
+            android:padding="10dp"
+            android:src="@drawable/ic_ai"
+            app:tint="@color/on_surface_variant" />
+
+        <ImageButton
+            android:id="@+id/btn_notifications"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_notifications"
+            android:padding="10dp"
+            android:src="@drawable/ic_notifications"
+            app:tint="@color/on_surface_variant" />
+
+        <TextView
+            android:id="@+id/top_bar_avatar"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginStart="2dp"
+            android:background="@drawable/bg_avatar"
+            android:contentDescription="@string/cd_profile"
+            android:fontFamily="@font/inter"
+            android:gravity="center"
+            android:text="@string/citizen_initials"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>

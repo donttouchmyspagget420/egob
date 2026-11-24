@@ -2,4 +2,60 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Civic palette -->
+    <color name="primary">#FF000F25</color>
+    <color name="on_primary">#FFFFFFFF</color>
+    <color name="primary_container">#FF0F2540</color>
+    <color name="on_primary_container">#FF798DAD</color>
+    <color name="primary_fixed">#FFD4E3FF</color>
+    <color name="primary_fixed_dim">#FFB3C8EA</color>
+    <color name="on_primary_fixed">#FF041C37</color>
+    <color name="on_primary_fixed_variant">#FF344864</color>
+    <color name="inverse_primary">#FFB3C8EA</color>
+
+    <color name="secondary">#FF006781</color>
+    <color name="on_secondary">#FFFFFFFF</color>
+    <color name="secondary_container">#FF8FDFFF</color>
+    <color name="on_secondary_container">#FF00647D</color>
+    <color name="secondary_fixed">#FFB9EAFF</color>
+    <color name="secondary_fixed_dim">#FF81D1F0</color>
+    <color name="on_secondary_fixed">#FF001F29</color>
+    <color name="on_secondary_fixed_variant">#FF004D62</color>
+
+    <color name="tertiary">#FF00130A</color>
+    <color name="on_tertiary">#FFFFFFFF</color>
+    <color name="tertiary_container">#FF002B1B</color>
+    <color name="on_tertiary_container">#FF009F6E</color>
+    <color name="tertiary_fixed">#FF6FFBBE</color>
+    <color name="tertiary_fixed_dim">#FF4EDEA3</color>
+    <color name="on_tertiary_fixed">#FF002113</color>
+    <color name="on_tertiary_fixed_variant">#FF005236</color>
+
+    <color name="surface">#FFF8F9FF</color>
+    <color name="surface_bright">#FFF8F9FF</color>
+    <color name="surface_dim">#FFCCDBF4</color>
+    <color name="surface_container_lowest">#FFFFFFFF</color>
+    <color name="surface_container_low">#FFEFF4FF</color>
+    <color name="surface_container">#FFE6EEFF</color>
+    <color name="surface_container_high">#FFDDE9FF</color>
+    <color name="surface_container_highest">#FFD5E3FD</color>
+    <color name="surface_variant">#FFD5E3FD</color>
+    <color name="on_surface">#FF0D1C2F</color>
+    <color name="on_background">#FF0D1C2F</color>
+    <color name="on_surface_variant">#FF44474D</color>
+    <color name="inverse_surface">#FF233144</color>
+    <color name="inverse_on_surface">#FFEBF1FF</color>
+    <color name="surface_tint">#FF4B5F7D</color>
+    <color name="outline">#FF74777E</color>
+    <color name="outline_variant">#FFC4C6CE</color>
+
+    <color name="error">#FFBA1A1A</color>
+    <color name="on_error">#FFFFFFFF</color>
+    <color name="error_container">#FFFFDAD6</color>
+    <color name="on_error_container">#FF93000A</color>
+    <color name="success">#FF059669</color>
+    <color name="warning">#FFB45309</color>
+
+    <color name="transparent">#00000000</color>
 </resources>
