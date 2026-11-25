@@ -618,7 +618,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 android:gravity="center"
-                android:paddingHorizontal="14dp"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
                 android:text="@string/assistant_disclaimer"
                 android:textColor="@color/outline"
                 android:textSize="9sp" />

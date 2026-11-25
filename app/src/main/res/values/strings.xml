@@ -32,7 +32,7 @@
     <string name="citizen_nin">NAT-8829-4102-X</string>
     <string name="citizen_id_short">NID-8409-771</string>
     <string name="citizen_dob">14 oct 1989</string>
-    <string name="citizen_address">742 Evergreen Terrace, Sector 4</string>
+    <string name="citizen_address">Calle Los Álamos 742, Sector 4</string>
     <string name="citizen_city">Capital Cívica, CP-10024</string>
     <string name="citizen_district">Distrito 01 - Territorio Capital</string>
     <string name="status_verified">Verificado</string>
@@ -526,7 +526,7 @@
     <string name="detail_uploaded_file_detail">1.4 MB • Cifrado en reposo</string>
     <string name="detail_delivery">Opción de entrega y cumplimiento</string>
     <string name="detail_courier">Mensajería a la dirección registrada</string>
-    <string name="detail_courier_detail">Envío seguro con seguimiento a: 742 Evergreen Terrace, Sector 4, Capital Cívica. Requiere firma física.</string>
+    <string name="detail_courier_detail">Envío seguro con seguimiento a: Calle Los Álamos 742, Sector 4, Capital Cívica. Requiere firma física.</string>
     <string name="detail_pickup">Recoger en el Salón Cívico Central</string>
     <string name="detail_pickup_detail">Quiosco de autoservicio en la estación del Centro Cívico, mostrador 4. Validación de identidad al recoger.</string>
     <string name="detail_free">Gratis</string>
