@@ -36,6 +36,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/inter"
+                android:id="@+id/text_greeting"
                 android:text="@string/home_greeting"
                 android:textColor="@color/on_surface"
                 android:textSize="14sp" />
@@ -176,6 +177,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="1dp"
                             android:fontFamily="@font/inter"
+                            android:id="@+id/text_credential_name"
                             android:text="@string/citizen_name"
                             android:textColor="@color/white"
                             android:textSize="24sp"
@@ -201,6 +203,7 @@
                                 android:layout_marginStart="4dp"
                                 android:fontFamily="monospace"
                                 android:letterSpacing="0.06"
+                                android:id="@+id/text_credential_nin"
                                 android:text="@string/citizen_nin"
                                 android:textColor="@color/secondary_fixed"
                                 android:textSize="12sp"
@@ -240,6 +243,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
                         android:layout_weight="1"
+                        android:id="@+id/text_biometric_status"
                         android:text="@string/home_biometric_sync"
                         android:textColor="@color/white"
                         android:textSize="11sp"
@@ -769,6 +773,7 @@
                             android:layout_height="wrap_content"
                             android:ellipsize="end"
                             android:maxLines="1"
+                            android:id="@+id/text_active_request_title"
                             android:text="@string/home_passport_renewal"
                             android:textColor="@color/on_surface"
                             android:textSize="14sp"
@@ -778,6 +783,7 @@
                             style="@style/TextAppearance.Egob.BodySmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:id="@+id/text_active_request_ref"
                             android:text="@string/home_passport_ref" />
                     </LinearLayout>
 
@@ -785,6 +791,7 @@
                         style="@style/Widget.Egob.Chip.Info"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:id="@+id/chip_active_request_status"
                         android:text="@string/home_in_production"
                         app:ensureMinTouchTargetSize="false" />
                 </LinearLayout>
@@ -808,6 +815,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
                         android:layout_weight="1"
+                        android:id="@+id/text_active_request_step"
                         android:text="@string/home_passport_step"
                         android:textColor="@color/on_surface"
                         android:textSize="11sp"
@@ -816,6 +824,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:id="@+id/text_active_request_percent"
                         android:text="75%"
                         android:textColor="@color/secondary"
                         android:textSize="11sp"
@@ -828,6 +837,7 @@
                     android:layout_height="8dp"
                     android:layout_marginTop="6dp"
                     android:max="100"
+                    android:id="@+id/progress_active_request"
                     android:progress="75"
                     android:progressBackgroundTint="@color/surface_container_high"
                     android:progressTint="@color/secondary" />
@@ -851,6 +861,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
                         android:layout_weight="1"
+                        android:id="@+id/text_active_request_estimated"
                         android:text="@string/home_estimated_dispatch"
                         android:textColor="@color/on_surface_variant"
                         android:textSize="11sp" />
@@ -935,6 +946,7 @@
                             android:layout_weight="1"
                             android:ellipsize="end"
                             android:maxLines="1"
+                            android:id="@+id/text_update_license_title"
                             android:text="@string/home_license_verified"
                             android:textColor="@color/on_surface"
                             android:textSize="12sp"
@@ -943,6 +955,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:id="@+id/text_update_license_time"
                             android:text="@string/home_two_hours_ago"
                             android:textColor="@color/on_surface_variant"
                             android:textSize="10sp" />
@@ -954,6 +967,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"
+                        android:id="@+id/text_update_license_body"
                         android:text="@string/home_license_detail" />
                 </LinearLayout>
 
@@ -1010,6 +1024,7 @@
                             android:layout_weight="1"
                             android:ellipsize="end"
                             android:maxLines="1"
+                            android:id="@+id/text_update_voter_title"
                             android:text="@string/home_voter_confirmed"
                             android:textColor="@color/on_surface"
                             android:textSize="12sp"
@@ -1018,6 +1033,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:id="@+id/text_update_voter_time"
                             android:text="@string/home_yesterday"
                             android:textColor="@color/on_surface_variant"
                             android:textSize="10sp" />
@@ -1029,6 +1045,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"
+                        android:id="@+id/text_update_voter_body"
                         android:text="@string/home_voter_detail" />
                 </LinearLayout>
 

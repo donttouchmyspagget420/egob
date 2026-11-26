@@ -26,6 +26,8 @@ public class AdminRequest {
     public final int statusType;
     @NonNull
     public final String action;
+    public int requestId;
+    public String rawStatus;
 
     public AdminRequest(@NonNull String id, @NonNull String citizen, @NonNull String initials,
                         @NonNull String service, @NonNull String submitted, @NonNull String officer,

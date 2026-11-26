@@ -23,18 +23,25 @@ import java.util.Locale;
 
 import deez.nuts.egob.MainActivity;
 import deez.nuts.egob.R;
+import deez.nuts.egob.data.AppRepository;
+import deez.nuts.egob.data.RepositoryCallback;
+import deez.nuts.egob.database.entities.Service;
+import deez.nuts.egob.util.Formatters;
+import deez.nuts.egob.util.SessionManager;
 
 public class ServicesFragment extends Fragment implements TabFragment {
 
     private final List<ServiceItem> allServices = new ArrayList<>();
     private final List<ServiceItem> filteredServices = new ArrayList<>();
 
+    private AppRepository repository;
     private ServicesAdapter adapter;
     private TextInputEditText searchInput;
     private ChipGroup categoryGroup;
     private View emptyState;
     private TextView countLabel;
     private String selectedCategory = "all";
+    private int userId = -1;
 
     public ServicesFragment() {
         super(R.layout.fragment_services);
@@ -49,6 +56,9 @@ public class ServicesFragment extends Fragment implements TabFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        repository = AppRepository.get(requireContext());
+        userId = SessionManager.currentUserId(requireContext());
+
         TextView subtitle = view.findViewById(R.id.top_bar_subtitle);
         subtitle.setText(R.string.services_subtitle);
 
@@ -58,8 +68,6 @@ public class ServicesFragment extends Fragment implements TabFragment {
                 ((MainActivity) requireActivity()).openNotifications());
         view.findViewById(R.id.top_bar_avatar).setOnClickListener(v ->
                 ((MainActivity) requireActivity()).openProfile());
-
-        buildServices();
 
         searchInput = view.findViewById(R.id.input_search);
         categoryGroup = view.findViewById(R.id.chip_group_categories);
@@ -72,16 +80,12 @@ public class ServicesFragment extends Fragment implements TabFragment {
         adapter = new ServicesAdapter(new ServicesAdapter.Listener() {
             @Override
             public void onServiceClick(@NonNull ServiceItem item) {
-                ((MainActivity) requireActivity()).openServiceDetail(item.title, item.description);
+                ((MainActivity) requireActivity()).openServiceDetail(item.id, item.title, item.description);
             }
 
             @Override
             public void onBookmarkClick(@NonNull ServiceItem item, int position) {
-                item.bookmarked = !item.bookmarked;
-                adapter.notifyItemChanged(position);
-                Snackbar.make(view, item.bookmarked
-                        ? R.string.services_bookmarked
-                        : R.string.services_unbookmarked, Snackbar.LENGTH_SHORT).show();
+                toggleBookmark(item, position, view);
             }
         });
         list.setAdapter(adapter);
@@ -120,57 +124,99 @@ public class ServicesFragment extends Fragment implements TabFragment {
         });
 
         view.findViewById(R.id.btn_support).setOnClickListener(v ->
-                Snackbar.make(view, R.string.services_support_detail, Snackbar.LENGTH_LONG).show());
+                ((MainActivity) requireActivity()).openAssistant());
 
-        applyFilters();
+        loadServices(view);
     }
 
-    private void buildServices() {
-        allServices.clear();
-        allServices.add(new ServiceItem(R.drawable.ic_travel, "civil",
-                getString(R.string.service_passport_authority),
-                getString(R.string.service_passport_title),
-                getString(R.string.service_passport_desc),
-                getString(R.string.service_days_2_5),
-                getString(R.string.service_price_45),
-                getString(R.string.service_action_request), null));
+    private void loadServices(@NonNull View view) {
+        if (userId <= 0) {
+            Snackbar.make(view, R.string.detail_requires_session, Snackbar.LENGTH_LONG).show();
+            return;
+        }
+        repository.getServices(userId, new RepositoryCallback<List<Service>>() {
+            @Override
+            public void onSuccess(List<Service> value) {
+                if (!isAdded()) {
+                    return;
+                }
+                allServices.clear();
+                for (Service service : value) {
+                    ServiceItem item = new ServiceItem(iconFor(service), service.category,
+                            safe(service.authority), safe(service.name), safe(service.description),
+                            safe(service.time),
+                            service.fee <= 0 ? getString(R.string.service_free)
+                                    : Formatters.currency(service.fee),
+                            getString(R.string.service_action_request), service.badge);
+                    item.id = service.id;
+                    item.bookmarked = service.bookmarked;
+                    allServices.add(item);
+                }
+                applyFilters();
+            }
 
-        allServices.add(new ServiceItem(R.drawable.ic_car, "transport",
-                getString(R.string.service_driver_authority),
-                getString(R.string.service_driver_title),
-                getString(R.string.service_driver_desc),
-                getString(R.string.service_driver_time),
-                getString(R.string.service_price_3250),
-                getString(R.string.service_action_request), null));
+            @Override
+            public void onError(String message) {
+                if (isAdded()) {
+                    Snackbar.make(view, message, Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
 
-        allServices.add(new ServiceItem(R.drawable.ic_documents, "civil",
-                getString(R.string.service_civil_authority),
-                getString(R.string.service_civil_title),
-                getString(R.string.service_civil_desc),
-                getString(R.string.service_civil_time),
-                getString(R.string.service_free),
-                getString(R.string.service_action_request),
-                getString(R.string.service_civil_badge)));
+    private void toggleBookmark(@NonNull ServiceItem item, int position, @NonNull View view) {
+        if (userId <= 0) {
+            return;
+        }
+        boolean previous = item.bookmarked;
+        item.bookmarked = !previous;
+        adapter.notifyItemChanged(position);
+        repository.toggleBookmark(userId, item.id, new RepositoryCallback<Boolean>() {
+            @Override
+            public void onSuccess(Boolean value) {
+                if (!isAdded()) {
+                    return;
+                }
+                item.bookmarked = value;
+                adapter.notifyItemChanged(position);
+                Snackbar.make(view, value ? R.string.services_bookmarked
+                        : R.string.services_unbookmarked, Snackbar.LENGTH_SHORT).show();
+            }
 
-        allServices.add(new ServiceItem(R.drawable.ic_storefront, "taxes",
-                getString(R.string.service_commerce_authority),
-                getString(R.string.service_commerce_title),
-                getString(R.string.service_commerce_desc),
-                getString(R.string.service_days_3_7),
-                getString(R.string.service_price_80),
-                getString(R.string.service_action_register), null));
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) {
+                    return;
+                }
+                item.bookmarked = previous;
+                adapter.notifyItemChanged(position);
+                Snackbar.make(view, message, Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
 
-        allServices.add(new ServiceItem(R.drawable.ic_family, "health",
-                getString(R.string.service_social_authority),
-                getString(R.string.service_social_title),
-                getString(R.string.service_social_desc),
-                getString(R.string.service_days_5_10),
-                getString(R.string.service_free),
-                getString(R.string.service_action_access),
-                getString(R.string.service_social_badge)));
+    private int iconFor(Service service) {
+        String name = safe(service.name).toLowerCase(Locale.getDefault());
+        if (name.contains("pasaporte") || name.contains("viaje")) {
+            return R.drawable.ic_travel;
+        }
+        switch (safe(service.category)) {
+            case "transport":
+                return R.drawable.ic_car;
+            case "taxes":
+                return R.drawable.ic_storefront;
+            case "health":
+                return R.drawable.ic_family;
+            case "civil":
+            default:
+                return R.drawable.ic_documents;
+        }
     }
 
     private void applyFilters() {
+        if (adapter == null || searchInput == null || emptyState == null || countLabel == null) {
+            return;
+        }
         String query = searchInput.getText() == null
                 ? ""
                 : searchInput.getText().toString().trim().toLowerCase(Locale.getDefault());
@@ -193,6 +239,10 @@ public class ServicesFragment extends Fragment implements TabFragment {
         emptyState.setVisibility(empty ? View.VISIBLE : View.GONE);
         countLabel.setText(empty
                 ? getString(R.string.services_no_results)
-                : getString(R.string.services_all_filtered, filteredServices.size()));
+                : getString(R.string.services_all_filtered_total, filteredServices.size(), allServices.size()));
+    }
+
+    private static String safe(String value) {
+        return value == null ? "" : value;
     }
 }

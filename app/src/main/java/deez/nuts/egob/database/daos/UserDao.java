@@ -5,8 +5,10 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
-import deez.nuts.egob.database.entities.User;
+
 import java.util.List;
+
+import deez.nuts.egob.database.entities.User;
 
 @Dao
 public interface UserDao {
@@ -27,4 +29,13 @@ public interface UserDao {
 
     @Query("SELECT * FROM users WHERE email = :email LIMIT 1")
     User getByEmail(String email);
+
+    @Query("SELECT * FROM users WHERE nin = :nin LIMIT 1")
+    User getByNin(String nin);
+
+    @Query("SELECT * FROM users WHERE nin = :identifier OR email = :identifier LIMIT 1")
+    User findByIdentifier(String identifier);
+
+    @Query("SELECT COUNT(*) FROM users")
+    int count();
 }

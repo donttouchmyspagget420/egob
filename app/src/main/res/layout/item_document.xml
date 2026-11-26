@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="@color/surface_container_lowest"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="1dp"
+    app:strokeWidth="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="11dp">
+
+        <ImageView
+            android:id="@+id/doc_icon"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:background="@drawable/bg_icon_soft"
+            android:contentDescription="@string/documents_added_title"
+            android:padding="9dp"
+            android:src="@drawable/ic_documents"
+            app:tint="@color/secondary" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="9dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/doc_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/on_surface"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="Contrato_arrendamiento.pdf" />
+
+            <TextView
+                android:id="@+id/doc_subtitle"
+                style="@style/TextAppearance.Egob.BodySmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                tools:text="1.4 MB · 12 nov 2025" />
+        </LinearLayout>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/doc_verified"
+            style="@style/Widget.Egob.Chip.Info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/documents_unverified"
+            android:textSize="8sp"
+            app:ensureMinTouchTargetSize="false" />
+
+        <ImageButton
+            android:id="@+id/doc_menu"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/action_details"
+            android:padding="7dp"
+            android:src="@drawable/ic_more_horiz"
+            app:tint="@color/outline" />
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

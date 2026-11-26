@@ -84,6 +84,7 @@
                             android:text="@string/detail_fee" />
 
                         <TextView
+                            android:id="@+id/detail_fee_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
@@ -116,6 +117,7 @@
                             android:text="@string/detail_validity" />
 
                         <TextView
+                            android:id="@+id/detail_validity_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
@@ -147,6 +149,7 @@
                             android:text="@string/detail_turnaround" />
 
                         <TextView
+                            android:id="@+id/detail_turnaround_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
@@ -512,6 +515,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/detail_uploaded_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/detail_uploaded_file"
@@ -520,6 +524,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/detail_uploaded_meta"
                         style="@style/TextAppearance.Egob.BodySmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -609,6 +614,7 @@
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:id="@+id/detail_courier_price"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/detail_courier_price"

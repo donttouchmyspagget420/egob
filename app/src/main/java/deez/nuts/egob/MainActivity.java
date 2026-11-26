@@ -27,6 +27,7 @@ import deez.nuts.egob.ui.RequestsFragment;
 import deez.nuts.egob.ui.ServiceDetailFragment;
 import deez.nuts.egob.ui.ServicesFragment;
 import deez.nuts.egob.ui.TabFragment;
+import deez.nuts.egob.util.SessionManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -76,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             selectedTab = savedInstanceState.getInt(STATE_SELECTED_TAB, R.id.nav_home);
             syncNavigation();
+        } else if (SessionManager.currentUserId(this) > 0) {
+            openHome();
         } else {
             openLogin();
         }
@@ -162,8 +165,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openServiceDetail(@NonNull String title, @NonNull String description) {
+        openServiceDetail(0, title, description);
+    }
+
+    public void openServiceDetail(int serviceId, @NonNull String title, @NonNull String description) {
         ServiceDetailFragment fragment = new ServiceDetailFragment();
         Bundle args = new Bundle();
+        args.putInt(ServiceDetailFragment.ARG_SERVICE_ID, serviceId);
         args.putString(ServiceDetailFragment.ARG_TITLE, title);
         args.putString(ServiceDetailFragment.ARG_DESCRIPTION, description);
         fragment.setArguments(args);

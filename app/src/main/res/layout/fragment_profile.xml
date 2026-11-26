@@ -52,6 +52,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:clickable="false"
+                            android:id="@+id/chip_profile_tier"
                             android:text="@string/profile_tier"
                             android:textSize="9sp"
                             app:chipIcon="@drawable/ic_workspace_premium"
@@ -62,6 +63,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:letterSpacing="0.08"
+                            android:id="@+id/text_civ_id"
                             android:text="@string/profile_civ_id"
                             android:textAllCaps="true"
                             android:textColor="@color/on_primary_container"
@@ -87,6 +89,7 @@
                                 android:background="@drawable/bg_avatar"
                                 android:fontFamily="@font/inter"
                                 android:gravity="center"
+                                android:id="@+id/text_profile_initials"
                                 android:text="@string/citizen_initials"
                                 android:textColor="@color/white"
                                 android:textSize="22sp"
@@ -115,6 +118,7 @@
                                 android:layout_height="wrap_content"
                                 android:ellipsize="end"
                                 android:maxLines="1"
+                                android:id="@+id/text_profile_name"
                                 android:text="@string/citizen_name"
                                 android:textColor="@color/white"
                                 android:textSize="21sp"
@@ -125,6 +129,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="1dp"
+                                android:id="@+id/text_profile_nin"
                                 android:text="@string/citizen_nin"
                                 android:textColor="@color/secondary_fixed"
                                 android:textSize="12sp"
@@ -134,6 +139,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="2dp"
+                                android:id="@+id/text_registry_since"
                                 android:text="@string/profile_registry_since"
                                 android:textColor="@color/on_primary_container"
                                 android:textSize="10sp" />
@@ -171,6 +177,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:id="@+id/text_profile_district"
                             android:text="@string/citizen_district"
                             android:textColor="@color/primary_fixed_dim"
                             android:textSize="9sp" />
@@ -250,6 +257,7 @@
                                 style="@style/TextAppearance.Egob.FieldValue"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:id="@+id/text_profile_dob"
                                 android:text="@string/citizen_dob"
                                 android:textSize="14sp" />
                         </LinearLayout>
@@ -291,6 +299,7 @@
                                 style="@style/TextAppearance.Egob.FieldValue"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:id="@+id/text_profile_marital"
                                 android:text="@string/profile_married"
                                 android:textSize="14sp" />
 
@@ -340,12 +349,14 @@
                                 style="@style/TextAppearance.Egob.FieldValue"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:id="@+id/text_profile_address"
                                 android:text="@string/citizen_address"
                                 android:textSize="13sp" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:id="@+id/text_profile_city"
                                 android:text="@string/citizen_city"
                                 android:textColor="@color/on_surface_variant"
                                 android:textSize="11sp" />
@@ -388,6 +399,7 @@
                                 style="@style/TextAppearance.Egob.FieldValue"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:id="@+id/text_profile_polling"
                                 android:text="@string/profile_polling_value"
                                 android:textSize="13sp" />
 
@@ -404,6 +416,48 @@
                             android:layout_height="18dp"
                             android:contentDescription="@string/profile_polling"
                             android:src="@drawable/ic_how_to_vote"
+                            app:tint="@color/outline" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/surface_container_low" />
+
+                    <LinearLayout
+                        android:id="@+id/row_edit_contact"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?attr/selectableItemBackground"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp">
+
+                        <ImageView
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:contentDescription="@string/profile_edit_contact"
+                            android:src="@drawable/ic_edit_note"
+                            app:tint="@color/secondary" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="7dp"
+                            android:layout_weight="1"
+                            android:text="@string/profile_edit_contact"
+                            android:textColor="@color/secondary"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:contentDescription="@string/profile_edit_contact"
+                            android:src="@drawable/ic_chevron_right"
                             app:tint="@color/outline" />
                     </LinearLayout>
                 </LinearLayout>
@@ -855,6 +909,7 @@
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:id="@+id/text_profile_language"
                                 style="@style/TextAppearance.Egob.BodySmall"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"

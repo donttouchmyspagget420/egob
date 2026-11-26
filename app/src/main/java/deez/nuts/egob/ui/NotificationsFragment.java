@@ -16,14 +16,21 @@ import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import deez.nuts.egob.MainActivity;
 import deez.nuts.egob.R;
+import deez.nuts.egob.data.AppRepository;
+import deez.nuts.egob.data.RepositoryCallback;
+import deez.nuts.egob.database.entities.Notification;
+import deez.nuts.egob.util.Formatters;
+import deez.nuts.egob.util.SessionManager;
 
 public class NotificationsFragment extends Fragment {
 
-    private final List<NotificationItem> allNotifications = new ArrayList<>();
+    private final List<Notification> allNotifications = new ArrayList<>();
+    private final List<NotificationItem> allItems = new ArrayList<>();
 
     private NotificationsAdapter todayAdapter;
     private NotificationsAdapter yesterdayAdapter;
@@ -35,7 +42,14 @@ public class NotificationsFragment extends Fragment {
     private View emptyState;
     private View markAllFooter;
     private TextView todayBadge;
+    private Chip chipAll;
+    private Chip chipUrgent;
+    private Chip chipUpdates;
+    private Chip chipLegal;
+    private AppRepository repository;
+    private View root;
     private String selectedFilter = "all";
+    private int userId = -1;
 
     public NotificationsFragment() {
         super(R.layout.fragment_notifications);
@@ -44,11 +58,12 @@ public class NotificationsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        root = view;
+        repository = AppRepository.get(requireContext());
+        userId = SessionManager.currentUserId(requireContext());
 
         MaterialToolbar toolbar = view.findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> getParentFragmentManager().popBackStack());
-
-        buildNotifications();
 
         todayList = view.findViewById(R.id.list_today);
         yesterdayList = view.findViewById(R.id.list_yesterday);
@@ -68,6 +83,11 @@ public class NotificationsFragment extends Fragment {
         yesterdayList.setAdapter(yesterdayAdapter);
         earlierList.setAdapter(earlierAdapter);
 
+        chipAll = view.findViewById(R.id.chip_notifications_all);
+        chipUrgent = view.findViewById(R.id.chip_notifications_urgent);
+        chipUpdates = view.findViewById(R.id.chip_notifications_updates);
+        chipLegal = view.findViewById(R.id.chip_notifications_legal);
+
         ChipGroup filters = view.findViewById(R.id.chip_group_notifications);
         filters.setOnCheckedStateChangeListener((group, checkedIds) -> {
             if (checkedIds.isEmpty()) {
@@ -78,53 +98,152 @@ public class NotificationsFragment extends Fragment {
             applyFilter();
         });
 
-        view.findViewById(R.id.btn_mark_all_read).setOnClickListener(v -> {
-            markAllFooter.setVisibility(View.VISIBLE);
-            todayBadge.setVisibility(View.GONE);
-            Snackbar.make(view, R.string.notifications_all_read, Snackbar.LENGTH_SHORT).show();
-        });
+        view.findViewById(R.id.btn_mark_all_read).setOnClickListener(v -> markAllRead());
+        markAllFooter.setOnClickListener(v -> markAllRead());
 
-        applyFilter();
+        if (userId <= 0) {
+            ((MainActivity) requireActivity()).openLogin();
+            return;
+        }
+        loadNotifications();
     }
 
     private NotificationsAdapter createAdapter() {
         return new NotificationsAdapter(new NotificationsAdapter.Listener() {
             @Override
             public void onAction(@NonNull NotificationItem item) {
+                if (item.notificationId > 0) {
+                    repository.markNotificationRead(item.notificationId);
+                }
                 MainActivity activity = (MainActivity) requireActivity();
-                switch (item.categoryKey) {
-                    case "passport":
-                        activity.openRequests();
-                        break;
-                    case "license":
-                    case "tax_receipt":
-                        activity.openDocuments();
-                        break;
-                    case "vehicle":
-                        activity.openServices();
-                        break;
-                    case "tax":
-                        activity.openRequests();
-                        break;
-                    default:
-                        View root = getView();
-                        if (root != null && item.action != null) {
-                            Snackbar.make(root, item.action, Snackbar.LENGTH_SHORT).show();
-                        }
-                        break;
+                if ("request".equals(item.relatedType)) {
+                    activity.openRequests();
+                } else if ("document".equals(item.relatedType)) {
+                    activity.openDocuments();
+                } else if (item.action != null) {
+                    Snackbar.make(root, item.action, Snackbar.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onDismiss(@NonNull NotificationItem item) {
-                allNotifications.remove(item);
+                repository.dismissNotification(userId, item.notificationId,
+                        new RepositoryCallback<Void>() {
+                            @Override
+                            public void onSuccess(Void value) {
+                                if (!isAdded() || root == null) {
+                                    return;
+                                }
+                                removeNotification(item.notificationId);
+                                Snackbar.make(root, R.string.notifications_dismissed,
+                                        Snackbar.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onError(String message) {
+                                if (isAdded() && root != null) {
+                                    Snackbar.make(root, message, Snackbar.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+            }
+        });
+    }
+
+    private void loadNotifications() {
+        repository.getNotifications(userId, new RepositoryCallback<List<Notification>>() {
+            @Override
+            public void onSuccess(List<Notification> value) {
+                if (!isAdded() || root == null) {
+                    return;
+                }
+                allNotifications.clear();
+                allNotifications.addAll(value);
+                rebuildItems();
                 applyFilter();
-                View root = getView();
-                if (root != null) {
-                    Snackbar.make(root, R.string.notifications_dismissed, Snackbar.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(String message) {
+                if (isAdded() && root != null) {
+                    Snackbar.make(root, message, Snackbar.LENGTH_LONG).show();
                 }
             }
         });
+    }
+
+    private void rebuildItems() {
+        allItems.clear();
+        for (Notification notification : allNotifications) {
+            NotificationItem item = toItem(notification);
+            allItems.add(item);
+        }
+        int unread = 0;
+        int urgent = 0;
+        int updates = 0;
+        int legal = 0;
+        for (Notification notification : allNotifications) {
+            if (!notification.read) {
+                unread++;
+            }
+            if ("urgent".equals(notification.category)) {
+                urgent++;
+            } else if ("legal".equals(notification.category)) {
+                legal++;
+            } else {
+                updates++;
+            }
+        }
+        chipAll.setText(getString(R.string.notifications_all_count, allNotifications.size()));
+        chipUrgent.setText(getString(R.string.notifications_urgent_count, urgent));
+        chipUpdates.setText(getString(R.string.notifications_updates_count, updates));
+        chipLegal.setText(getString(R.string.notifications_legal_count, legal));
+        if (unread > 0) {
+            todayBadge.setVisibility(View.VISIBLE);
+            todayBadge.setText(getString(R.string.notifications_new_count, unread));
+        } else {
+            todayBadge.setVisibility(View.GONE);
+        }
+    }
+
+    private NotificationItem toItem(@NonNull Notification notification) {
+        String key;
+        int icon;
+        int iconBackground;
+        int accent;
+        int categoryLabel;
+        if ("urgent".equals(notification.category)) {
+            key = "urgent";
+            icon = R.drawable.ic_campaign;
+            iconBackground = R.drawable.bg_icon_error;
+            accent = R.color.error;
+            categoryLabel = R.string.notifications_category_urgent;
+        } else if ("legal".equals(notification.category)) {
+            key = "legal";
+            icon = R.drawable.ic_documents;
+            iconBackground = R.drawable.bg_icon_success;
+            accent = R.color.on_tertiary_fixed_variant;
+            categoryLabel = R.string.notifications_category_legal;
+        } else {
+            key = "updates";
+            icon = R.drawable.ic_contactless;
+            iconBackground = R.drawable.bg_icon_soft;
+            accent = R.color.secondary;
+            categoryLabel = R.string.notifications_category_updates;
+        }
+
+        NotificationItem item = new NotificationItem(key, icon, iconBackground, accent,
+                getString(categoryLabel), Formatters.relative(notification.createdAt),
+                safe(notification.title), safe(notification.body));
+        item.timeGroup = groupFor(notification.createdAt);
+        item.action = notification.actionLabel == null || notification.actionLabel.trim().isEmpty()
+                ? null : notification.actionLabel;
+        item.dismissible = true;
+        item.notificationId = notification.id;
+        item.relatedType = notification.relatedType;
+        item.relatedId = notification.relatedId;
+        item.read = notification.read;
+        return item;
     }
 
     private void applyFilter() {
@@ -132,7 +251,7 @@ public class NotificationsFragment extends Fragment {
         List<NotificationItem> yesterday = new ArrayList<>();
         List<NotificationItem> earlier = new ArrayList<>();
 
-        for (NotificationItem item : allNotifications) {
+        for (NotificationItem item : allItems) {
             if (!"all".equals(selectedFilter) && !selectedFilter.equals(item.categoryKey)) {
                 continue;
             }
@@ -156,91 +275,61 @@ public class NotificationsFragment extends Fragment {
         earlierList.setVisibility(earlier.isEmpty() ? View.GONE : View.VISIBLE);
     }
 
-    private void buildNotifications() {
-        allNotifications.clear();
+    private void markAllRead() {
+        repository.markAllNotificationsRead(userId, new RepositoryCallback<Void>() {
+            @Override
+            public void onSuccess(Void value) {
+                if (!isAdded() || root == null) {
+                    return;
+                }
+                for (Notification notification : allNotifications) {
+                    notification.read = true;
+                }
+                rebuildItems();
+                applyFilter();
+                Snackbar.make(root, R.string.notifications_all_read, Snackbar.LENGTH_SHORT).show();
+            }
 
-        NotificationItem tax = new NotificationItem("urgent", R.drawable.ic_campaign,
-                R.drawable.bg_icon_error, R.color.error,
-                getString(R.string.notifications_urgent_action),
-                getString(R.string.notifications_ten_min),
-                getString(R.string.notifications_tax_deadline),
-                getString(R.string.notifications_tax_body));
-        tax.timeGroup = "today";
-        tax.action = getString(R.string.notifications_review_file);
-        tax.dismissible = true;
-        allNotifications.add(tax);
+            @Override
+            public void onError(String message) {
+                if (isAdded() && root != null) {
+                    Snackbar.make(root, message, Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
 
-        NotificationItem passport = new NotificationItem("updates", R.drawable.ic_contactless,
-                R.drawable.bg_icon_soft, R.color.secondary,
-                getString(R.string.notifications_document_track),
-                getString(R.string.notifications_two_hours),
-                getString(R.string.notifications_passport_title),
-                getString(R.string.notifications_passport_body));
-        passport.timeGroup = "today";
-        passport.chipPrimary = getString(R.string.notifications_security_cleared);
-        passport.chipSecondary = getString(R.string.notifications_step_3);
-        passport.action = getString(R.string.notifications_track_step);
-        allNotifications.add(passport);
+    private void removeNotification(int notificationId) {
+        for (int i = allNotifications.size() - 1; i >= 0; i--) {
+            if (allNotifications.get(i).id == notificationId) {
+                allNotifications.remove(i);
+            }
+        }
+        rebuildItems();
+        applyFilter();
+    }
 
-        NotificationItem license = new NotificationItem("legal", R.drawable.ic_documents,
-                R.drawable.bg_icon_success, R.color.on_tertiary_fixed_variant,
-                getString(R.string.notifications_vault_sync),
-                getString(R.string.notifications_time_415),
-                getString(R.string.notifications_license_approved),
-                getString(R.string.notifications_license_body));
-        license.timeGroup = "yesterday";
-        license.chipPrimary = getString(R.string.notifications_ready);
-        license.action = getString(R.string.notifications_view_wallet);
-        allNotifications.add(license);
+    private static String groupFor(long timestamp) {
+        Calendar now = Calendar.getInstance();
+        Calendar target = Calendar.getInstance();
+        target.setTimeInMillis(timestamp);
+        if (sameDay(now, target)) {
+            return "today";
+        }
+        Calendar yesterday = Calendar.getInstance();
+        yesterday.add(Calendar.DAY_OF_YEAR, -1);
+        if (sameDay(yesterday, target)) {
+            return "yesterday";
+        }
+        return "earlier";
+    }
 
-        NotificationItem login = new NotificationItem("legal", R.drawable.ic_security,
-                R.drawable.bg_icon_soft, R.color.on_surface_variant,
-                getString(R.string.notifications_security_protocol),
-                getString(R.string.notifications_time_1102),
-                getString(R.string.notifications_login),
-                getString(R.string.notifications_login_body));
-        login.timeGroup = "yesterday";
-        login.action = getString(R.string.notifications_verify_device);
-        login.footer = getString(R.string.notifications_ip);
-        allNotifications.add(login);
+    private static boolean sameDay(Calendar a, Calendar b) {
+        return a.get(Calendar.YEAR) == b.get(Calendar.YEAR)
+                && a.get(Calendar.DAY_OF_YEAR) == b.get(Calendar.DAY_OF_YEAR);
+    }
 
-        NotificationItem water = new NotificationItem("updates", R.drawable.ic_water,
-                R.drawable.bg_icon_secondary_soft, R.color.secondary,
-                getString(R.string.notifications_public_works),
-                getString(R.string.notifications_nov_11),
-                getString(R.string.notifications_water),
-                getString(R.string.notifications_water_body));
-        water.timeGroup = "earlier";
-        allNotifications.add(water);
-
-        NotificationItem voter = new NotificationItem("updates", R.drawable.ic_how_to_vote,
-                R.drawable.bg_icon_soft, R.color.secondary,
-                getString(R.string.notifications_electoral_board),
-                getString(R.string.notifications_nov_09),
-                getString(R.string.notifications_voter),
-                getString(R.string.notifications_voter_body));
-        voter.timeGroup = "earlier";
-        allNotifications.add(voter);
-
-        NotificationItem receipt = new NotificationItem("updates", R.drawable.ic_payments,
-                R.drawable.bg_icon_soft, R.color.primary,
-                getString(R.string.notifications_category_tax),
-                getString(R.string.notifications_tax_receipt_time),
-                getString(R.string.notifications_tax_receipt_title),
-                getString(R.string.notifications_tax_receipt_body));
-        receipt.timeGroup = "earlier";
-        receipt.action = getString(R.string.notifications_tax_receipt_action);
-        allNotifications.add(receipt);
-
-        NotificationItem vehicle = new NotificationItem("urgent", R.drawable.ic_car,
-                R.drawable.bg_icon_error, R.color.error,
-                getString(R.string.notifications_category_transport),
-                getString(R.string.notifications_vehicle_time),
-                getString(R.string.notifications_vehicle_title),
-                getString(R.string.notifications_vehicle_body));
-        vehicle.timeGroup = "earlier";
-        vehicle.action = getString(R.string.notifications_vehicle_action);
-        vehicle.dismissible = true;
-        allNotifications.add(vehicle);
+    private static String safe(String value) {
+        return value == null ? "" : value;
     }
 }

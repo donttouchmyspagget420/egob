@@ -27,10 +27,25 @@ public class Request {
 
     public String status;
     public String time;
+    public String reference;
+    public double fee;
+
+    @ColumnInfo(name = "delivery_method")
+    public String deliveryMethod;
 
     @ColumnInfo(name = "department_id")
     public int departmentId;
 
     @ColumnInfo(name = "created_at")
-    public long createdAt; // Stored as Unix timestamp
+    public long createdAt;
+
+    @ColumnInfo(name = "updated_at")
+    public long updatedAt;
+
+    public String priority;
+
+    @ColumnInfo(name = "assigned_officer")
+    public String assignedOfficer;
+
+    public String notes;
 }

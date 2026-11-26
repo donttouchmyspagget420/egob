@@ -22,6 +22,7 @@ public class ServiceItem {
     @NonNull
     public final String action;
     public final String badge;
+    public int id;
     public boolean bookmarked;
 
     public ServiceItem(@DrawableRes int iconRes, @NonNull String category, @NonNull String authority,

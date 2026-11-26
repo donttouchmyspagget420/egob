@@ -29,6 +29,10 @@ public class NotificationItem {
     public String action;
     public String footer;
     public boolean dismissible;
+    public int notificationId;
+    public String relatedType;
+    public int relatedId;
+    public boolean read;
 
     public NotificationItem(@NonNull String categoryKey, @DrawableRes int iconRes,
                             @DrawableRes int iconBackgroundRes, @ColorRes int accentColorRes,

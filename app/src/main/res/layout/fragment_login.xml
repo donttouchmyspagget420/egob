@@ -256,6 +256,17 @@
                         app:ensureMinTouchTargetSize="false" />
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/text_demo_hint"
+                    style="@style/TextAppearance.Egob.BodySmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:text="@string/login_demo_hint"
+                    android:textColor="@color/secondary"
+                    android:textSize="10sp" />
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_authenticate"
                     style="@style/Widget.Egob.Button"

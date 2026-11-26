@@ -4,9 +4,11 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+
+import java.util.List;
+
 import deez.nuts.egob.database.entities.Message;
 import deez.nuts.egob.database.entities.MessageUser;
-import java.util.List;
 
 @Dao
 public interface MessageUserDao {
@@ -19,6 +21,8 @@ public interface MessageUserDao {
     @Query("SELECT * FROM message_user WHERE user_id = :userId")
     List<MessageUser> getByUserId(int userId);
 
-    @Query("SELECT messages.* FROM messages INNER JOIN message_user ON messages.id = message_user.message_id WHERE message_user.user_id = :userId")
+    @Query("SELECT messages.* FROM messages INNER JOIN message_user "
+            + "ON messages.id = message_user.message_id "
+            + "WHERE message_user.user_id = :userId ORDER BY messages.created_at ASC")
     List<Message> getMessagesForUser(int userId);
 }

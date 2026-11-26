@@ -59,6 +59,7 @@
             android:layout_width="196dp"
             android:layout_height="196dp"
             android:contentDescription="@string/qr_title"
+            android:id="@+id/qr_image"
             android:src="@drawable/ic_qr_art" />
 
         <LinearLayout
@@ -78,6 +79,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
+                android:id="@+id/qr_status"
                 android:text="@string/qr_expires"
                 android:textColor="@color/on_surface_variant" />
         </LinearLayout>
@@ -90,6 +92,7 @@
         android:fontFamily="monospace"
         android:gravity="center"
         android:letterSpacing="0.08"
+        android:id="@+id/qr_nin"
         android:text="@string/citizen_nin"
         android:textColor="@color/on_surface"
         android:textSize="15sp"

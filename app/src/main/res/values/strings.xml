@@ -673,4 +673,221 @@
     <string name="qr_sha">Firma: SHA-256 validada</string>
     <string name="qr_zero_knowledge">Prueba de conocimiento cero</string>
     <string name="qr_done_presenting">Terminar presentación</string>
+
+    <!-- Autenticación y cuenta (implementación funcional) -->
+    <string name="login_demo_hint">Acceso de demostración: NIN NAT-8829-4102-X · clave egob2026</string>
+    <string name="login_loading">Verificando identidad…</string>
+    <string name="login_no_passkey">No hay una llave de acceso vinculada a este dispositivo. Usa tu identidad nacional.</string>
+    <string name="login_welcome_back">Sesión verificada. Bienvenido de nuevo.</string>
+    <string name="register_password">Código de acceso secreto</string>
+    <string name="register_password_confirm">Confirmar código de acceso</string>
+    <string name="register_password_hint">Mínimo 8 caracteres</string>
+    <string name="register_password_short">El código de acceso debe tener al menos 8 caracteres.</string>
+    <string name="register_password_mismatch">Los códigos de acceso no coinciden.</string>
+    <string name="register_nin_invalid">El NIN debe tener el formato NIN-XXXX-XXXX-XX.</string>
+    <string name="register_phone_invalid">Ingresa un teléfono móvil válido.</string>
+    <string name="register_name_required">Ingresa tu nombre legal completo.</string>
+    <string name="register_loading">Creando identidad digital…</string>
+    <string name="register_success">Identidad digital creada. Bienvenido a eGob.</string>
+
+    <!-- Comunes -->
+    <string name="common_loading">Cargando…</string>
+    <string name="common_error">No se pudo completar la operación.</string>
+    <string name="common_retry">Reintentar</string>
+    <string name="common_delete">Eliminar</string>
+    <string name="common_save">Guardar</string>
+    <string name="common_share">Compartir</string>
+    <string name="common_open">Abrir</string>
+    <string name="common_confirm">Confirmar</string>
+    <string name="common_saved">Cambios guardados.</string>
+    <string name="common_file_saved">Archivo guardado en %1$s</string>
+    <string name="common_share_title">Compartir documento de eGob</string>
+    <string name="common_no_app">No hay una aplicación disponible para abrir este archivo.</string>
+    <string name="common_pdf_mime">application/pdf</string>
+
+    <!-- Inicio dinámico -->
+    <string name="home_greeting_named" formatted="false">Buenos días, <b>%1$s</b></string>
+    <string name="home_biometric_pending">Biometría pendiente de activación</string>
+    <string name="home_active_request_step">Paso %1$d de 4 · %2$s</string>
+    <string name="home_active_request_updated">Actualizada %1$s</string>
+    <string name="home_no_recent_updates">No hay actualizaciones recientes del registro.</string>
+    <string name="home_open_update">Abrir actualización</string>
+
+    <!-- Servicios -->
+    <string name="services_all_filtered_total">Mostrando %1$d de %2$d servicios</string>
+    <string name="services_available_count">%1$d disponibles</string>
+    <string name="services_load_error">No se pudo cargar el directorio de servicios.</string>
+
+    <!-- Solicitudes -->
+    <string name="requests_filter_all">Todas (%1$d)</string>
+    <string name="requests_filter_progress">En curso (%1$d)</string>
+    <string name="requests_filter_action">Acción requerida (%1$d)</string>
+    <string name="requests_filter_completed">Completadas (%1$d)</string>
+    <string name="requests_empty">Aún no tienes solicitudes</string>
+    <string name="requests_empty_detail">Explora el directorio de servicios para iniciar tu primer trámite.</string>
+    <string name="requests_explore">Explorar servicios</string>
+    <string name="requests_action_upload">Subir documento faltante</string>
+    <string name="requests_action_download">Descargar copia digital</string>
+    <string name="requests_action_details">Ver detalles</string>
+    <string name="requests_action_hide">Ocultar detalles</string>
+    <string name="requests_status_rejected">Rechazada</string>
+    <string name="requests_progress_pending">Paso 1 de 3: Revisión inicial del expediente</string>
+    <string name="requests_progress_action">Paso 2 de 3: Verificación en pausa</string>
+    <string name="requests_progress_in_progress">Paso 3 de 4: Verificación y control de seguridad</string>
+    <string name="requests_progress_completed" formatted="false">100% completado · Aprobada y emitida</string>
+    <string name="requests_progress_rejected">Solicitud rechazada · Revisa la nota del oficial</string>
+    <string name="requests_updated">Actualizada el %1$s</string>
+    <string name="requests_detail_ref">Referencia</string>
+    <string name="requests_detail_service">Servicio</string>
+    <string name="requests_detail_delivery">Método de envío</string>
+    <string name="requests_detail_fee">Tarifa</string>
+    <string name="requests_detail_officer">Oficial asignado</string>
+    <string name="requests_detail_attachments">Documentos adjuntos</string>
+    <string name="requests_no_attachments">Sin documentos adjuntos.</string>
+    <string name="requests_upload_generic">Subir documento</string>
+    <string name="requests_upload_selected">%1$s · %2$s</string>
+    <string name="requests_upload_required">Selecciona un documento antes de confirmar.</string>
+    <string name="requests_upload_error">No se pudo adjuntar el documento.</string>
+    <string name="requests_pdf_error">No se pudo generar el comprobante.</string>
+    <string name="requests_pdf_ready">Comprobante generado: %1$s</string>
+    <string name="requests_attachment_added">Documento adjuntado. La solicitud pasó a revisión.</string>
+    <string name="requests_load_error">No se pudieron cargar tus solicitudes.</string>
+    <string name="requests_detail_hint">Toca una solicitud para expandir su expediente.</string>
+
+    <!-- Documentos -->
+    <string name="documents_active_credentials_count">Credenciales de identidad activas (%1$d)</string>
+    <string name="documents_added_title">Documentos añadidos a la bóveda</string>
+    <string name="documents_empty">Aún no has añadido documentos</string>
+    <string name="documents_empty_detail">Usa Agregar para incorporar un PDF o imagen a tu bóveda cifrada.</string>
+    <string name="documents_uploaded_detail">%1$s · %2$s</string>
+    <string name="documents_delete_title">Eliminar documento</string>
+    <string name="documents_delete_body">¿Eliminar %1$s de tu bóveda? Esta acción no se puede deshacer.</string>
+    <string name="documents_deleted">Documento eliminado de la bóveda.</string>
+    <string name="documents_add_error">No se pudo añadir el documento.</string>
+    <string name="documents_audit_title">Registro de acceso y auditoría</string>
+    <string name="documents_audit_empty">No hay eventos de auditoría recientes.</string>
+    <string name="documents_pdf_saved">PDF guardado en %1$s</string>
+    <string name="documents_load_error">No se pudo cargar la bóveda de documentos.</string>
+    <string name="documents_unverified">En revisión</string>
+    <string name="documents_open_error">No se pudo abrir el documento.</string>
+
+    <!-- Perfil -->
+    <string name="profile_edit_contact">Editar datos de contacto</string>
+    <string name="profile_edit_title">Editar datos de contacto</string>
+    <string name="profile_phone">Teléfono móvil</string>
+    <string name="profile_address">Domicilio principal</string>
+    <string name="profile_saved">Datos de contacto actualizados.</string>
+    <string name="profile_save_error">No se pudieron guardar los cambios.</string>
+    <string name="profile_sign_out_title">Cerrar sesión</string>
+    <string name="profile_sign_out_body">¿Cerrar sesión de eGob ID en este dispositivo?</string>
+    <string name="profile_signed_out">Sesión cerrada.</string>
+    <string name="profile_download_saved">Paquete de identidad guardado en %1$s</string>
+    <string name="profile_download_error">No se pudo generar el registro de identidad.</string>
+    <string name="profile_correction_title">Solicitar corrección</string>
+    <string name="profile_correction_hint">Describe el dato que necesitas corregir</string>
+    <string name="profile_correction_sent">Solicitud de corrección creada.</string>
+    <string name="profile_devices_title">Dispositivos vinculados</string>
+    <string name="profile_devices_body">Este dispositivo y una tableta cívica tienen sesiones activas. Las sesiones se revocan automáticamente al cerrar sesión.</string>
+    <string name="profile_language_title">Idioma preferido</string>
+    <string name="profile_prefs_saved">Preferencias actualizadas.</string>
+    <string name="profile_prefs_error">No se pudieron actualizar las preferencias.</string>
+    <string name="profile_admin_restricted">Acceso restringido a funcionarios.</string>
+    <string name="profile_load_error">No se pudo cargar tu perfil ciudadano.</string>
+
+    <!-- Notificaciones -->
+    <string name="notifications_all_count">Todas (%1$d)</string>
+    <string name="notifications_urgent_count">Avisos urgentes (%1$d)</string>
+    <string name="notifications_updates_count">Actualizaciones (%1$d)</string>
+    <string name="notifications_legal_count">Legal y bóveda (%1$d)</string>
+    <string name="notifications_new_count">%1$d nuevas</string>
+    <string name="notifications_empty">No hay notificaciones en esta categoría.</string>
+    <string name="notifications_mark_read">Notificación marcada como leída.</string>
+    <string name="notifications_error">No se pudieron actualizar las notificaciones.</string>
+    <string name="notifications_load_error">No se pudieron cargar las notificaciones.</string>
+
+    <!-- Asistente -->
+    <string name="assistant_thinking">eGobBot está consultando el registro…</string>
+    <string name="assistant_error">No se pudo enviar la consulta.</string>
+    <string name="assistant_attach_error">No se pudo adjuntar el documento.</string>
+    <string name="assistant_voice_unavailable">El reconocimiento de voz no está disponible en este dispositivo.</string>
+    <string name="assistant_start_service">Iniciar solicitud</string>
+    <string name="assistant_attachment_received">Documento recibido por eGobBot.</string>
+    <string name="assistant_load_error">No se pudo cargar la conversación.</string>
+
+    <!-- Administración -->
+    <string name="admin_restricted_title">Acceso restringido</string>
+    <string name="admin_restricted_body">La mesa de operaciones solo está disponible para funcionarios verificados.</string>
+    <string name="admin_action_title">Acciones sobre la solicitud</string>
+    <string name="admin_approve_action">Aprobar y firmar</string>
+    <string name="admin_request_docs_action">Solicitar documentos</string>
+    <string name="admin_reject_action">Rechazar solicitud</string>
+    <string name="admin_view_dossier_action">Ver expediente</string>
+    <string name="admin_status_updated">Estado de la solicitud actualizado.</string>
+    <string name="admin_status_error">No se pudo actualizar la solicitud.</string>
+    <string name="admin_broadcast_title">Publicar boletín cívico</string>
+    <string name="admin_broadcast_hint">Título del boletín</string>
+    <string name="admin_broadcast_body_hint">Mensaje para la ciudadanía</string>
+    <string name="admin_broadcast_sent_count">Boletín publicado para %1$d ciudadanos.</string>
+    <string name="admin_audit_title">Informe diario de auditoría</string>
+    <string name="admin_audit_empty">No hay eventos de auditoría.</string>
+    <string name="admin_audit_report">Solicitudes: %1$d · Activas: %2$d · Completadas hoy: %3$d\nCumplimiento SLA: %4$s</string>
+    <string name="admin_queue_title">Colas de oficiales</string>
+    <string name="admin_queue_body">Solicitudes abiertas: %1$d\nVerificaciones pendientes: %2$d\nCiudadanos registrados: %3$d</string>
+    <string name="admin_queue_reassigned">Cola reasignada al agente de turno.</string>
+    <string name="admin_dossier_title">Expediente %1$s</string>
+    <string name="admin_dossier_body">%1$s\n%2$s\nOficial: %3$s\nNotas: %4$s</string>
+    <string name="admin_pending_review_count">%1$d pendientes de revisión</string>
+    <string name="admin_load_error">No se pudo cargar la mesa de operaciones.</string>
+    <string name="admin_reassign">Reasignar cola</string>
+    <string name="admin_status_updated_body">La solicitud %1$s cambió a %2$s.</string>
+
+    <!-- Detalle de servicio -->
+    <string name="detail_submit_amount">Enviar solicitud digital y pagar (%1$s)</string>
+    <string name="detail_submit_pickup_amount">Enviar solicitud digital y pagar (%1$s)</string>
+    <string name="detail_file_selected">%1$s · %2$s</string>
+    <string name="detail_upload_error">No se pudo adjuntar el documento.</string>
+    <string name="detail_submit_error">No se pudo crear la solicitud.</string>
+    <string name="detail_requires_session">Inicia sesión para solicitar este servicio.</string>
+    <string name="detail_request_created">Solicitud %1$s creada. Puedes seguirla en Solicitudes.</string>
+    <string name="detail_load_error">No se pudo cargar el servicio.</string>
+    <string name="detail_delivery_courier">Mensajería a la dirección registrada</string>
+    <string name="detail_delivery_pickup">Recojo en el Salón Cívico Central</string>
+
+    <!-- QR -->
+    <string name="qr_nin_label">NIN %1$s</string>
+    <string name="qr_expires_count">Token dinámico caduca en: %1$s</string>
+    <string name="qr_regenerate_count">Se regenera en %1$d s</string>
+    <string name="qr_error">No se pudo generar el código QR.</string>
+    <string name="qr_verified">Firma verificada</string>
+
+    <!-- Valores dinámicos adicionales -->
+    <string name="documents_expires_value">Vence %1$s</string>
+    <string name="documents_detail_body">Número: %1$s\nEmitido: %2$s\nVence: %3$s\nTamaño: %4$s</string>
+    <string name="profile_tier_value">Identidad %1$s validada</string>
+    <string name="profile_civ_id_value">CIV-ID %1$s</string>
+    <string name="profile_registry_since_value">Registro activo desde %1$s • %2$s</string>
+    <string name="profile_contact_required">Completa el teléfono y el domicilio.</string>
+    <string name="profile_language_updated">Idioma preferido actualizado.</string>
+    <string name="profile_language_es">Español (oficial)</string>
+    <string name="profile_language_en">Inglés</string>
+    <string name="profile_language_pt">Portugués</string>
+    <string name="profile_admin_citizens">Ciudadanos registrados</string>
+    <string name="admin_citizens">Ciudadanos</string>
+    <string name="admin_citizens_detail">Identidades activas</string>
+    <string name="admin_citizens_signed">Verificadas</string>
+    <string name="admin_no_pending">Sin solicitudes pendientes</string>
+    <string name="admin_dossier_attachments">Documentos adjuntos: %1$d</string>
+    <string name="admin_dossier_none">Sin acciones disponibles para esta solicitud.</string>
+    <string name="admin_action_confirm">¿Confirmas la acción «%1$s» sobre %2$s?</string>
+    <string name="admin_action_done">Solicitud actualizada.</string>
+    <string name="admin_queue_reassigned_count">%1$d solicitudes reasignadas.</string>
+    <string name="admin_audit_report_title">Informe de auditoría</string>
+    <string name="admin_broadcast_required">Ingresa un título y un mensaje.</string>
+    <string name="admin_request_docs_note">Solicitamos documentación adicional para continuar la verificación.</string>
+    <string name="admin_reject_note">La solicitud no cumple los requisitos. Revisa la documentación e inicia una nueva solicitud.</string>
+    <string name="admin_approve_note">Verificación completada. Documento emitido y firmado digitalmente.</string>
+    <string name="notifications_category_urgent">Aviso urgente</string>
+    <string name="notifications_category_updates">Actualización</string>
+    <string name="notifications_category_legal">Legal y bóveda</string>
+    <string name="notifications_mark_all_read">Marcar todo como leído</string>
 </resources>

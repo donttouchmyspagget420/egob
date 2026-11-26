@@ -123,6 +123,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:id="@+id/text_documents_count"
                     android:text="@string/documents_active_credentials"
                     android:textColor="@color/primary"
                     android:textSize="14sp"
@@ -269,6 +270,7 @@
                                         android:layout_height="wrap_content"
                                         android:ellipsize="end"
                                         android:maxLines="1"
+                                        android:id="@+id/text_nid_name"
                                         android:text="@string/citizen_name"
                                         android:textColor="@color/white"
                                         android:textSize="20sp"
@@ -307,6 +309,7 @@
                                         style="@style/TextAppearance.Egob.Mono"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:id="@+id/text_nid_dob"
                                         android:text="14 OCT 1989"
                                         android:textColor="@color/white"
                                         android:textSize="10sp" />
@@ -331,6 +334,7 @@
                                         style="@style/TextAppearance.Egob.Mono"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:id="@+id/text_nid_number"
                                         android:text="@string/citizen_id_short"
                                         android:textColor="@color/white"
                                         android:textSize="10sp" />
@@ -378,6 +382,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
+                            android:id="@+id/text_nid_expires"
                             android:text="@string/documents_expires_2032"
                             android:textColor="@color/white"
                             android:textSize="10sp" />
@@ -479,6 +484,7 @@
                                 style="@style/TextAppearance.Egob.Mono"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:id="@+id/text_license_number"
                                 android:text="@string/documents_license_value"
                                 android:textColor="@color/white"
                                 android:textSize="12sp"
@@ -503,6 +509,7 @@
                                 style="@style/TextAppearance.Egob.Mono"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:id="@+id/text_license_class"
                                 android:text="@string/documents_class_c"
                                 android:textColor="@color/white"
                                 android:textSize="12sp" />
@@ -527,6 +534,7 @@
                                 style="@style/TextAppearance.Egob.Mono"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:id="@+id/text_license_expires"
                                 android:text="@string/documents_expires_2028"
                                 android:textColor="@color/white"
                                 android:textSize="12sp" />
@@ -629,6 +637,7 @@
                                 style="@style/TextAppearance.Egob.Mono"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:id="@+id/text_medicare_policy"
                                 android:text="@string/documents_policy_value"
                                 android:textColor="@color/white"
                                 android:textSize="12sp" />
@@ -653,6 +662,7 @@
                                 style="@style/TextAppearance.Egob.Mono"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:id="@+id/text_medicare_dependent"
                                 android:text="@string/documents_primary"
                                 android:textColor="@color/white"
                                 android:textSize="12sp" />
@@ -677,6 +687,7 @@
                                 style="@style/TextAppearance.Egob.Mono"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:id="@+id/text_medicare_copay"
                                 android:text="@string/documents_copay_zero"
                                 android:textColor="@color/white"
                                 android:textSize="12sp" />
@@ -684,6 +695,67 @@
                     </LinearLayout>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
+
+            <!-- Documentos añadidos por el ciudadano -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextAppearance.Egob.Title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/documents_added_title"
+                    android:textSize="16sp" />
+
+                <com.google.android.material.chip.Chip
+                    style="@style/Widget.Egob.Chip.Info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/documents_e2ee"
+                    android:textSize="8sp"
+                    app:chipIcon="@drawable/ic_lock"
+                    app:ensureMinTouchTargetSize="false" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/list_documents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false"
+                tools:listitem="@layout/item_document" />
+
+            <LinearLayout
+                android:id="@+id/empty_documents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/bg_note"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/documents_empty"
+                    android:textColor="@color/on_surface"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    style="@style/TextAppearance.Egob.BodySmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:gravity="center"
+                    android:text="@string/documents_empty_detail" />
+            </LinearLayout>
 
             <!-- QR dinámico -->
             <com.google.android.material.card.MaterialCardView

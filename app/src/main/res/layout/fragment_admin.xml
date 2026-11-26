@@ -171,6 +171,7 @@
                             style="@style/TextAppearance.Egob.Mono"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:id="@+id/admin_kpi_active"
                             android:text="@string/admin_kpi_1428"
                             android:textColor="@color/primary"
                             android:textSize="23sp"
@@ -234,6 +235,7 @@
                             style="@style/TextAppearance.Egob.Mono"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:id="@+id/admin_kpi_pending"
                             android:text="@string/admin_kpi_384"
                             android:textColor="@color/primary"
                             android:textSize="23sp"
@@ -309,6 +311,7 @@
                             style="@style/TextAppearance.Egob.Mono"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:id="@+id/admin_kpi_issued"
                             android:text="@string/admin_kpi_4892"
                             android:textColor="@color/primary"
                             android:textSize="23sp"
@@ -355,6 +358,7 @@
                             android:orientation="horizontal">
 
                             <TextView
+                                android:id="@+id/admin_vault_label"
                                 style="@style/TextAppearance.Egob.LabelSmall"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -373,6 +377,7 @@
                         </LinearLayout>
 
                         <TextView
+                            android:id="@+id/admin_kpi_citizens"
                             style="@style/TextAppearance.Egob.Mono"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -424,6 +429,7 @@
                     style="@style/Widget.Egob.Chip.Warning"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/admin_pending_chip"
                     android:text="@string/admin_pending_review"
                     app:chipIcon="@drawable/ic_pending"
                     app:ensureMinTouchTargetSize="false" />
@@ -700,6 +706,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
+                        android:id="@+id/admin_kpi_compliance"
                         android:text="@string/admin_compliance_big"
                         android:textColor="@color/primary"
                         android:textSize="30sp"
