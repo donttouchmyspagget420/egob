@@ -103,7 +103,15 @@ public final class AppRepository {
     }
 
     public void seedBlocking() {
-        seedIfNeeded();
+        if (synchronous || ioExecutor == null) {
+            seedIfNeeded();
+            return;
+        }
+        try {
+            ioExecutor.submit(this::seedIfNeeded).get();
+        } catch (Exception e) {
+            throw new IllegalStateException("No se pudo preparar la base de datos", e);
+        }
     }
 
     private <T> void execute(RepositoryCallback<T> callback, Task<T> task) {
@@ -264,8 +272,7 @@ public final class AppRepository {
 
             Message message = new Message();
             message.role = "assistant";
-            message.message = "Hola, " + firstName(fullName) + ". Soy eGobBot. Tu identidad digital ya está activa. "
-                    + "Puedo orientarte sobre servicios, requisitos y el estado de tus solicitudes.";
+            message.message = "Hola, " + firstName(fullName) + ". Soy eGobBot.";
             message.createdAt = System.currentTimeMillis();
             int messageId = (int) database.messageDao().insert(message);
             MessageUser messageUser = new MessageUser();
@@ -600,8 +607,7 @@ public final class AppRepository {
                 Profile profile = currentProfile(userId);
                 Message welcome = new Message();
                 welcome.role = "assistant";
-                welcome.message = "Hola, " + firstName(profile.fullName) + ". Soy eGobBot. "
-                        + "Puedo consultar el catálogo de servicios, explicarte requisitos o revisar tus solicitudes.";
+                welcome.message = "Hola, " + firstName(profile.fullName) + ". Soy eGobBot.";
                 welcome.createdAt = System.currentTimeMillis();
                 welcome.id = (int) database.messageDao().insert(welcome);
                 MessageUser link = new MessageUser();
@@ -623,9 +629,7 @@ public final class AppRepository {
             }
             Message userMessage = insertMessage(userId, "user", clean);
             AssistantEngine engine = new AssistantEngine();
-            AssistantEngine.Reply reply = engine.reply(clean,
-                    database.serviceDao().getActive(),
-                    database.requestDao().getByUserWithService(userId));
+            AssistantEngine.Reply reply = engine.reply(clean);
             Message botMessage = insertMessage(userId, "assistant", reply.text);
             return new ChatExchange(userMessage, botMessage, reply.serviceId);
         });
@@ -635,9 +639,7 @@ public final class AppRepository {
                                         RepositoryCallback<ChatExchange> callback) {
         execute(callback, () -> {
             Message userMessage = insertMessage(userId, "user", "Adjunto: " + fileName);
-            Message botMessage = insertMessage(userId, "assistant",
-                    "Recibí " + fileName + ". El documento quedó disponible para revisión. "
-                            + "Si quieres incorporarlo a tu bóveda, usa Documentos → Agregar.");
+            Message botMessage = insertMessage(userId, "assistant", AssistantEngine.SINGLE_REPLY);
             return new ChatExchange(userMessage, botMessage);
         });
     }
@@ -893,7 +895,7 @@ public final class AppRepository {
 
     // ---------------------------------------------------------------- seed
 
-    private void seedIfNeeded() {
+    private synchronized void seedIfNeeded() {
         if (database.userDao().count() > 0) {
             return;
         }

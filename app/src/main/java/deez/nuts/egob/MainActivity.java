@@ -109,8 +109,11 @@ public class MainActivity extends AppCompatActivity {
                 manager.beginTransaction().replace(R.id.fragment_container, fragment);
         if (addToBackStack) {
             transaction.addToBackStack(fragment.getClass().getSimpleName());
+            transaction.commit();
+            manager.executePendingTransactions();
+        } else {
+            transaction.commitNow();
         }
-        transaction.commitNow();
         syncNavigation();
     }
 

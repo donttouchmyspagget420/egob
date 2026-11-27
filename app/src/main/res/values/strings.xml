@@ -379,8 +379,6 @@
     <string name="profile_tax_push_detail">Recordatorios de renovaciones y plazos</string>
     <string name="profile_health">Salud pública y vacunas</string>
     <string name="profile_health_detail">Clínicas comunitarias y refuerzos estacionales</string>
-    <string name="profile_language">Idioma preferido</string>
-    <string name="profile_language_value">Español (oficial)</string>
     <string name="profile_download_record">Descargar registro de identidad soberana</string>
     <string name="profile_download_record_detail">Paquete cifrado (JSON y PDF)</string>
     <string name="profile_request_correction">Solicitar corrección de datos del registro</string>
@@ -395,7 +393,6 @@
     <string name="profile_footer_law">Regida por la Ley Federal de Identidad 2024</string>
     <string name="profile_identity_record_ready">Registro de identidad cifrado listo para descargar.</string>
     <string name="profile_correction_started">Solicitud de corrección iniciada. Un agente te contactará.</string>
-    <string name="profile_language_dialog">El idioma oficial de eGob es el español. Los documentos se emitirán en español.</string>
 
     <!-- Notificaciones -->
     <string name="notifications_title">Notificaciones oficiales</string>
@@ -792,7 +789,6 @@
     <string name="profile_correction_sent">Solicitud de corrección creada.</string>
     <string name="profile_devices_title">Dispositivos vinculados</string>
     <string name="profile_devices_body">Este dispositivo y una tableta cívica tienen sesiones activas. Las sesiones se revocan automáticamente al cerrar sesión.</string>
-    <string name="profile_language_title">Idioma preferido</string>
     <string name="profile_prefs_saved">Preferencias actualizadas.</string>
     <string name="profile_prefs_error">No se pudieron actualizar las preferencias.</string>
     <string name="profile_admin_restricted">Acceso restringido a funcionarios.</string>
@@ -871,10 +867,6 @@
     <string name="profile_civ_id_value">CIV-ID %1$s</string>
     <string name="profile_registry_since_value">Registro activo desde %1$s • %2$s</string>
     <string name="profile_contact_required">Completa el teléfono y el domicilio.</string>
-    <string name="profile_language_updated">Idioma preferido actualizado.</string>
-    <string name="profile_language_es">Español (oficial)</string>
-    <string name="profile_language_en">Inglés</string>
-    <string name="profile_language_pt">Portugués</string>
     <string name="profile_admin_citizens">Ciudadanos registrados</string>
     <string name="admin_citizens">Ciudadanos</string>
     <string name="admin_citizens_detail">Identidades activas</string>

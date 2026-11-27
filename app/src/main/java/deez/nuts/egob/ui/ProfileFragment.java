@@ -16,7 +16,6 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Locale;
 
 import deez.nuts.egob.MainActivity;
 import deez.nuts.egob.R;
@@ -65,7 +64,6 @@ public class ProfileFragment extends Fragment implements TabFragment {
                         .setMessage(R.string.profile_devices_body)
                         .setPositiveButton(R.string.action_done, null)
                         .show());
-        view.findViewById(R.id.row_language).setOnClickListener(v -> chooseLanguage());
         view.findViewById(R.id.row_download_record).setOnClickListener(v -> downloadRecord());
         view.findViewById(R.id.row_correction).setOnClickListener(v -> requestCorrection());
         view.findViewById(R.id.row_assistant).setOnClickListener(v -> activity.openAssistant());
@@ -129,7 +127,6 @@ public class ProfileFragment extends Fragment implements TabFragment {
         ((TextView) root.findViewById(R.id.text_profile_city)).setText(
                 profile.city + " · " + profile.code);
         ((TextView) root.findViewById(R.id.text_profile_polling)).setText(profile.pollingPlace);
-        ((TextView) root.findViewById(R.id.text_profile_language)).setText(profile.language);
 
         MaterialSwitch emergency = root.findViewById(R.id.switch_emergency);
         MaterialSwitch tax = root.findViewById(R.id.switch_tax);
@@ -231,51 +228,6 @@ public class ProfileFragment extends Fragment implements TabFragment {
                     });
                 })
                 .show();
-    }
-
-    private void chooseLanguage() {
-        if (profile == null) {
-            return;
-        }
-        String[] options = {
-                getString(R.string.profile_language_es),
-                getString(R.string.profile_language_en),
-                getString(R.string.profile_language_pt)
-        };
-        int selected = 0;
-        for (int i = 0; i < options.length; i++) {
-            if (options[i].equalsIgnoreCase(profile.language)) {
-                selected = i;
-                break;
-            }
-        }
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(R.string.profile_language_title)
-                .setSingleChoiceItems(options, selected, null)
-                .setNegativeButton(R.string.action_cancel, null);
-        androidx.appcompat.app.AlertDialog dialog = builder.create();
-        dialog.setOnShowListener(d -> dialog.getListView().setOnItemClickListener((parent, view, position, id) -> {
-            profile.language = options[position];
-            repository.updateProfile(user.id, profile, new RepositoryCallback<Void>() {
-                @Override
-                public void onSuccess(Void value) {
-                    if (!isAdded() || root == null) {
-                        return;
-                    }
-                    ((TextView) root.findViewById(R.id.text_profile_language)).setText(profile.language);
-                    Snackbar.make(root, R.string.profile_language_updated, Snackbar.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onError(String message) {
-                    if (isAdded() && root != null) {
-                        Snackbar.make(root, message, Snackbar.LENGTH_LONG).show();
-                    }
-                }
-            });
-            dialog.dismiss();
-        }));
-        dialog.show();
     }
 
     private void downloadRecord() {

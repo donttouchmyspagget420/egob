@@ -226,8 +226,8 @@ public class AppRepositoryTest {
 
         assertNull(exchange.error);
         assertNotNull(exchange.value.assistantMessage);
-        assertTrue(exchange.value.serviceId > 0);
-        assertTrue(exchange.value.assistantMessage.message.toLowerCase().contains("pasaporte"));
+        assertEquals(0, exchange.value.serviceId);
+        assertEquals(AssistantEngine.SINGLE_REPLY, exchange.value.assistantMessage.message);
 
         Result<List<deez.nuts.egob.database.entities.Message>> after = new Result<>();
         repository.getMessages(session.user.id, after);
