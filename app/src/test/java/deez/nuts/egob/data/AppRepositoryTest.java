@@ -18,7 +18,9 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import deez.nuts.egob.database.Database;
 import deez.nuts.egob.database.entities.Document;
@@ -125,6 +127,22 @@ public class AppRepositoryTest {
         Result<Boolean> restored = new Result<>();
         repository.toggleBookmark(session.user.id, passport.id, restored);
         assertTrue(restored.value);
+    }
+
+    @Test
+    public void serviceCatalogueCoversEveryCategoryFilter() {
+        AuthSession session = login("NAT-8829-4102-X");
+        Result<List<Service>> result = new Result<>();
+        repository.getServices(session.user.id, result);
+
+        assertNull(result.error);
+        Set<String> categories = new HashSet<>();
+        for (Service service : result.value) {
+            categories.add(service.category);
+        }
+        for (String expected : new String[]{"civil", "transport", "housing", "taxes", "health"}) {
+            assertTrue("Falta la categoría " + expected, categories.contains(expected));
+        }
     }
 
     @Test
@@ -305,6 +323,39 @@ public class AppRepositoryTest {
             if (RequestStatus.isOpen(row.request.status)) {
                 assertEquals("Agente de turno", row.request.assignedOfficer);
             }
+        }
+    }
+
+    @Test
+    public void citizenCannotUseAdminActions() {
+        AuthSession citizen = login("NAT-1204-7731-08");
+
+        Result<Integer> broadcast = new Result<>();
+        repository.broadcast(citizen.user.id, "Aviso", "Mensaje", broadcast);
+        assertNull(broadcast.value);
+        assertNotNull(broadcast.error);
+        assertTrue(broadcast.error.contains("permisos"));
+
+        Result<Integer> reassign = new Result<>();
+        repository.reassignQueue(citizen.user.id, "Agente de turno", reassign);
+        assertNull(reassign.value);
+        assertNotNull(reassign.error);
+
+        Result<List<RequestWithService>> all = new Result<>();
+        repository.getAllRequests(all);
+        RequestWithService pending = null;
+        for (RequestWithService row : all.value) {
+            if (RequestStatus.PENDING.equals(row.request.status)) {
+                pending = row;
+                break;
+            }
+        }
+        if (pending != null) {
+            Result<Void> update = new Result<>();
+            repository.updateRequestStatus(citizen.user.id, pending.request.id,
+                    RequestStatus.COMPLETED, "Intento no autorizado.", update);
+            assertNotNull(update.error);
+            assertTrue(update.error.contains("permisos"));
         }
     }
 

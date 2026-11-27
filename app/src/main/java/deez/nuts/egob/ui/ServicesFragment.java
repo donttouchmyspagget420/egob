@@ -207,6 +207,8 @@ public class ServicesFragment extends Fragment implements TabFragment {
                 return R.drawable.ic_storefront;
             case "health":
                 return R.drawable.ic_family;
+            case "housing":
+                return R.drawable.ic_home;
             case "civil":
             default:
                 return R.drawable.ic_documents;

@@ -22,7 +22,7 @@ public final class QrPayload {
     }
 
     public static boolean verify(String payload, String secret) {
-        if (payload == null) {
+        if (payload == null || secret == null || secret.isEmpty()) {
             return false;
         }
         String[] parts = payload.split("\\|");

@@ -195,6 +195,9 @@
     <string name="service_civil_authority">Estado Civil</string>
     <string name="service_civil_badge" formatted="false">100% en línea</string>
     <string name="service_civil_time">1 día hábil</string>
+    <string name="service_housing_title">Registro de propiedad y vivienda</string>
+    <string name="service_housing_desc">Inscripción de títulos de propiedad, certificados de residencia y permisos de arrendamiento con validación catastral.</string>
+    <string name="service_housing_authority">Registro de la Propiedad</string>
     <string name="service_commerce_title">Registro de empresas y comercio</string>
     <string name="service_commerce_desc">Constitución de empresas individuales, licencias operativas regionales, permisos comerciales municipales e identidad fiscal.</string>
     <string name="service_commerce_authority">Comercio e Impuestos</string>
@@ -676,6 +679,7 @@
 
     <!-- Autenticación y cuenta (implementación funcional) -->
     <string name="login_demo_hint">Acceso de demostración: NIN NAT-8829-4102-X · clave egob2026</string>
+    <string name="login_credentials_required">Ingresa tu NIN y tu código de acceso.</string>
     <string name="login_loading">Verificando identidad…</string>
     <string name="login_no_passkey">No hay una llave de acceso vinculada a este dispositivo. Usa tu identidad nacional.</string>
     <string name="login_welcome_back">Sesión verificada. Bienvenido de nuevo.</string>

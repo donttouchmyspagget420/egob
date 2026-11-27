@@ -33,6 +33,7 @@ public class QrPayloadTest {
 
         assertFalse(QrPayload.verify(tampered, SECRET));
         assertFalse(QrPayload.verify(payload, "otra-clave"));
+        assertFalse(QrPayload.verify(payload, null));
         assertFalse(QrPayload.verify("EGOB1|invalido", SECRET));
     }
 }

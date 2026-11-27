@@ -691,6 +691,7 @@ public final class AppRepository {
     public void updateRequestStatus(int adminUserId, int requestId, String newStatus,
                                     String note, RepositoryCallback<Void> callback) {
         execute(callback, () -> {
+            requireAdmin(adminUserId);
             Request request = database.requestDao().getById(requestId);
             if (request == null) {
                 throw new IllegalArgumentException("La solicitud ya no existe.");
@@ -719,6 +720,7 @@ public final class AppRepository {
     public void reassignQueue(int adminUserId, String officer,
                               RepositoryCallback<Integer> callback) {
         execute(callback, () -> {
+            requireAdmin(adminUserId);
             String target = officer == null || officer.trim().isEmpty()
                     ? "Agente de turno" : officer.trim();
             int updated = database.requestDao().reassignOpenRequests(target,
@@ -732,6 +734,7 @@ public final class AppRepository {
     public void broadcast(int adminUserId, String title, String body,
                           RepositoryCallback<Integer> callback) {
         execute(callback, () -> {
+            requireAdmin(adminUserId);
             List<User> users = database.userDao().getAll();
             long now = System.currentTimeMillis();
             for (User user : users) {
@@ -793,6 +796,13 @@ public final class AppRepository {
     }
 
     // ---------------------------------------------------------------- helpers
+
+    private void requireAdmin(int userId) {
+        User user = database.userDao().getById(userId);
+        if (user == null || !"admin".equals(user.role)) {
+            throw new SecurityException("No tienes permisos de administración.");
+        }
+    }
 
     private Profile currentProfile(int userId) {
         User user = database.userDao().getById(userId);
@@ -915,11 +925,13 @@ public final class AppRepository {
         Department revenue = department("Ingresos y Catastro");
         Department health = department("Salud y Bienestar Social");
         Department commerce = department("Comercio y Empresas");
+        Department housing = department("Vivienda y Tierras");
         int civilId = (int) database.departmentDao().insert(civil);
         int transportId = (int) database.departmentDao().insert(transport);
         int revenueId = (int) database.departmentDao().insert(revenue);
         int healthId = (int) database.departmentDao().insert(health);
         int commerceId = (int) database.departmentDao().insert(commerce);
+        int housingId = (int) database.departmentDao().insert(housing);
 
         int citizenRole = (int) database.roleDao().insert(role("citizen"));
         int adminRole = (int) database.roleDao().insert(role("admin"));
@@ -997,6 +1009,12 @@ public final class AppRepository {
                 "Oficina de Atención Ciudadana", "civil", null, 0,
                 "48 horas", "Cita única",
                 "NIN y motivo de la cita.", "Confirmación digital", civilId, true);
+        Service housingService = service(appContext.getString(R.string.service_housing_title),
+                appContext.getString(R.string.service_housing_desc),
+                appContext.getString(R.string.service_housing_authority), "housing", null, 20,
+                "3 a 5 días", "Vigencia permanente",
+                "Escritura o título de propiedad, NIN y comprobante de domicilio.",
+                "PDF firmado o recogida en oficina", housingId, true);
         int passportId = (int) database.serviceDao().insert(passport);
         int driverId = (int) database.serviceDao().insert(driver);
         int civilRecordsId = (int) database.serviceDao().insert(civilRecords);
@@ -1006,6 +1024,7 @@ public final class AppRepository {
         int taxesId = (int) database.serviceDao().insert(taxes);
         int healthCardId = (int) database.serviceDao().insert(healthCard);
         int appointmentsId = (int) database.serviceDao().insert(appointments);
+        int housingServiceId = (int) database.serviceDao().insert(housingService);
 
         Request passportRequest = request(elenaId, passportId, civilId, RequestStatus.IN_PROGRESS,
                 "#REQ-88319", 45, "Mensajería segura", now - 6L * 24 * 60 * 60 * 1000,

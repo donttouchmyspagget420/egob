@@ -69,7 +69,7 @@ public class LoginFragment extends Fragment {
         String identifier = ninInput.getText() == null ? "" : ninInput.getText().toString().trim();
         String password = passcodeInput.getText() == null ? "" : passcodeInput.getText().toString();
         if (identifier.isEmpty() || password.isEmpty()) {
-            Snackbar.make(root, "Ingresa tu NIN y tu código de acceso.", Snackbar.LENGTH_SHORT).show();
+            Snackbar.make(root, R.string.login_credentials_required, Snackbar.LENGTH_SHORT).show();
             return;
         }
         setLoading(true);

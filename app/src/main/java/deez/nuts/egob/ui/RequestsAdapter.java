@@ -153,7 +153,7 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.Reques
             int progressValue = progressFor(row.request.status);
             progress.setProgress(progressValue);
             percent.setText(progressValue + "%");
-            step.setText(stepLabel(row.request.status));
+            step.setText(stepLabel(itemView.getContext(), row.request.status));
 
             boolean isExpanded = expanded.contains(row.request.id);
             details.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
@@ -231,20 +231,20 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.Reques
         return 33;
     }
 
-    private static String stepLabel(String status) {
+    private static String stepLabel(android.content.Context context, String status) {
         if (RequestStatus.ACTION.equals(status)) {
-            return "Paso 2 de 4: Verificación en pausa";
+            return context.getString(R.string.requests_progress_action);
         }
         if (RequestStatus.IN_PROGRESS.equals(status)) {
-            return "Paso 3 de 4: Verificación y control de seguridad";
+            return context.getString(R.string.requests_progress_in_progress);
         }
         if (RequestStatus.COMPLETED.equals(status)) {
-            return "100% completado · Aprobada y emitida";
+            return context.getString(R.string.requests_progress_completed);
         }
         if (RequestStatus.REJECTED.equals(status)) {
-            return "Solicitud rechazada · Revisa la nota del oficial";
+            return context.getString(R.string.requests_progress_rejected);
         }
-        return "Paso 1 de 4: Revisión inicial del expediente";
+        return context.getString(R.string.requests_progress_pending);
     }
 
     private static void styleStatus(Chip chip, String status) {
