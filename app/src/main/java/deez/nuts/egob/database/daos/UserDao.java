@@ -33,6 +33,9 @@ public interface UserDao {
     @Query("SELECT * FROM users WHERE nin = :nin LIMIT 1")
     User getByNin(String nin);
 
+    @Query("SELECT * FROM users WHERE profile_id = :profileId LIMIT 1")
+    User getByProfileId(int profileId);
+
     @Query("SELECT * FROM users WHERE nin = :identifier OR email = :identifier LIMIT 1")
     User findByIdentifier(String identifier);
 

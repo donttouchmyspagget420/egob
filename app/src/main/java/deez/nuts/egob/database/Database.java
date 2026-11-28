@@ -60,7 +60,7 @@ import deez.nuts.egob.database.entities.Worker;
                 NotificationUser.class,
                 MessageUser.class
         },
-        version = 3,
+        version = 6,
         exportSchema = false
 )
 public abstract class Database extends RoomDatabase {

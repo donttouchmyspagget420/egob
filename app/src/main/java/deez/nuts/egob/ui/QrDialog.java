@@ -71,6 +71,15 @@ public final class QrDialog {
 
     private static void render(BottomSheetDialog dialog, Fragment fragment, ImageView image,
                                TextView status, Profile profile) {
+        if (!profile.qrEnabled) {
+            if (image != null) {
+                image.setImageResource(R.drawable.ic_qr_art);
+            }
+            if (status != null) {
+                status.setText(R.string.qr_revoked);
+            }
+            return;
+        }
         Handler handler = new Handler(Looper.getMainLooper());
         String secret = SecurityKeys.qrSecret(fragment.requireContext());
         long[] issuedAt = {System.currentTimeMillis()};

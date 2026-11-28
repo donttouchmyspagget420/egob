@@ -138,6 +138,11 @@
     <string name="home_health_card_detail">Beneficios y vacunas</string>
     <string name="home_appointments">Citas</string>
     <string name="home_appointments_detail">Consulados y registro</string>
+    <string name="home_staff_badge_admin">ADMIN</string>
+    <string name="home_staff_badge_officer">OFICIAL</string>
+    <string name="home_staff_admin_detail">Auditoría, colas y boletines</string>
+    <string name="home_staff_officer_detail">Revisión y gestión de solicitudes</string>
+    <string name="home_staff_action">Abrir mesa de operaciones</string>
     <string name="home_active_request">Solicitud activa en curso</string>
     <string name="home_track_history">Historial de seguimiento</string>
     <string name="home_passport_renewal">Renovación estándar de pasaporte</string>
@@ -195,6 +200,18 @@
     <string name="service_civil_authority">Estado Civil</string>
     <string name="service_civil_badge" formatted="false">100% en línea</string>
     <string name="service_civil_time">1 día hábil</string>
+    <string name="service_id_title">Renovación de identidad ciudadana</string>
+    <string name="service_id_desc">Renueva tu tarjeta de identidad nacional con verificación biométrica, actualización de fotografía y emisión de credencial digital.</string>
+    <string name="service_id_authority">Registro Civil</string>
+    <string name="service_taxes_title">Declaración de impuestos nacionales</string>
+    <string name="service_taxes_desc">Presenta tu declaración prellenada del ejercicio fiscal y revisa créditos aplicables.</string>
+    <string name="service_taxes_authority">Autoridad de Ingresos</string>
+    <string name="service_health_title">Tarjeta de salud y vacunas</string>
+    <string name="service_health_desc">Consulta beneficios, vacunas y citas de atención primaria.</string>
+    <string name="service_health_authority">Servicio Nacional de Salud</string>
+    <string name="service_appointments_title">Citas consulares y de registro</string>
+    <string name="service_appointments_desc">Reserva citas para trámites consulares, registro civil y atención presencial.</string>
+    <string name="service_appointments_authority">Oficina de Atención Ciudadana</string>
     <string name="service_housing_title">Registro de propiedad y vivienda</string>
     <string name="service_housing_desc">Inscripción de títulos de propiedad, certificados de residencia y permisos de arrendamiento con validación catastral.</string>
     <string name="service_housing_authority">Registro de la Propiedad</string>
@@ -543,6 +560,8 @@
     <!-- Administración -->
     <string name="admin_title">Mesa de operaciones</string>
     <string name="admin_gateway">Portal soberano nacional // Mesa de agencia</string>
+    <string name="admin_gateway_admin">Sesión de administrador // Mesa de agencia</string>
+    <string name="admin_gateway_officer">Sesión de oficial // Mesa de agencia</string>
     <string name="admin_heading">Mesa de operaciones y verificación cívica</string>
     <string name="admin_audit">Informe diario de auditoría</string>
     <string name="admin_queues">Gestionar colas de oficiales</string>
@@ -618,6 +637,42 @@
     <string name="admin_quick_audit">Informe diario</string>
     <string name="admin_quick_queues">Colas de oficiales</string>
     <string name="admin_quick_broadcast">Publicar boletín</string>
+    <string name="admin_quick_database">Base de datos</string>
+    <string name="admin_quick_access">Accesos</string>
+    <string name="admin_database_title">Base de datos</string>
+    <string name="admin_database_subtitle">Explorador CRUD de tablas</string>
+    <string name="admin_database_hint">Toca una tabla para consultar, crear, editar o eliminar filas. Los cambios se aplican directamente a la base local.</string>
+    <string name="admin_database_empty">No hay tablas disponibles.</string>
+    <string name="admin_table_rows">%1$d filas</string>
+    <string name="admin_table_limit">Mostrando hasta 200 filas. Usa el editor para modificar una fila.</string>
+    <string name="admin_table_empty">Esta tabla no tiene filas.</string>
+    <string name="admin_table_add">Nueva fila</string>
+    <string name="admin_table_edit_title">Editar fila</string>
+    <string name="admin_table_create_title">Nueva fila en %1$s</string>
+    <string name="admin_table_delete_title">Eliminar fila</string>
+    <string name="admin_table_delete_body">¿Eliminar esta fila de %1$s? Las filas relacionadas también pueden eliminarse.</string>
+    <string name="admin_table_delete_confirm">Eliminar</string>
+    <string name="admin_table_saved">Fila guardada.</string>
+    <string name="admin_table_deleted">Fila eliminada.</string>
+    <string name="admin_table_required">Completa los campos obligatorios.</string>
+    <string name="admin_table_null_hint">Vacío = NULL</string>
+    <string name="admin_table_value_hint">Valor</string>
+    <string name="admin_table_readonly">Clave primaria (solo lectura)</string>
+    <string name="admin_access_title">Accesos y credenciales</string>
+    <string name="admin_access_subtitle">QR, biometría y llave vinculada</string>
+    <string name="admin_access_hint">Selecciona un usuario para habilitar o revocar sus métodos de acceso.</string>
+    <string name="admin_access_qr">Credencial QR</string>
+    <string name="admin_access_biometric">Biometría</string>
+    <string name="admin_access_key">Llave de acceso vinculada</string>
+    <string name="admin_access_enabled">Activo</string>
+    <string name="admin_access_disabled">Revocado</string>
+    <string name="admin_access_dialog_title">Accesos de %1$s</string>
+    <string name="admin_access_saved">Accesos actualizados.</string>
+    <string name="admin_access_revoke_all">Revocar todo</string>
+    <string name="admin_access_revoke_title">Revocar todos los accesos</string>
+    <string name="admin_access_revoke_body">Se desactivarán QR, biometría y llave vinculada para %1$s.</string>
+    <string name="admin_access_revoked">Todos los accesos fueron revocados.</string>
+    <string name="admin_access_empty">No hay usuarios con perfil.</string>
     <string name="admin_node">NODE: DC-FED-04</string>
     <string name="admin_agent_412">Agente #412</string>
     <string name="admin_agent_108">Agente #108</string>
@@ -859,6 +914,9 @@
     <string name="qr_regenerate_count">Se regenera en %1$d s</string>
     <string name="qr_error">No se pudo generar el código QR.</string>
     <string name="qr_verified">Firma verificada</string>
+    <string name="qr_revoked">Credencial QR revocada por la administración.</string>
+    <string name="login_biometric_revoked">La biometría fue revocada. Inicia sesión con tu NIN y clave.</string>
+    <string name="login_access_key_revoked">La llave de acceso fue revocada. Inicia sesión con tu NIN y clave.</string>
 
     <!-- Valores dinámicos adicionales -->
     <string name="documents_expires_value">Vence %1$s</string>

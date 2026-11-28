@@ -56,7 +56,7 @@ public class LoginFragment extends Fragment {
 
         view.findViewById(R.id.btn_register).setOnClickListener(v ->
                 ((MainActivity) requireActivity()).openRegister());
-        view.findViewById(R.id.card_biometric).setOnClickListener(v -> loginWithDevice());
+        view.findViewById(R.id.card_biometric).setOnClickListener(v -> loginWithBiometric());
         view.findViewById(R.id.link_lost_access).setOnClickListener(v ->
                 new MaterialAlertDialogBuilder(requireContext())
                         .setTitle(R.string.login_lost_access)
@@ -97,6 +97,29 @@ public class LoginFragment extends Fragment {
     private void loginWithDevice() {
         setLoading(true);
         repository.loginWithDevice(new RepositoryCallback<AuthSession>() {
+            @Override
+            public void onSuccess(AuthSession value) {
+                if (!isAdded()) {
+                    return;
+                }
+                setLoading(false);
+                ((MainActivity) requireActivity()).openHome();
+            }
+
+            @Override
+            public void onError(String message) {
+                if (!isAdded()) {
+                    return;
+                }
+                setLoading(false);
+                Snackbar.make(root, message, Snackbar.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void loginWithBiometric() {
+        setLoading(true);
+        repository.loginWithBiometric(new RepositoryCallback<AuthSession>() {
             @Override
             public void onSuccess(AuthSession value) {
                 if (!isAdded()) {

@@ -68,7 +68,7 @@ public class ProfileFragment extends Fragment implements TabFragment {
         view.findViewById(R.id.row_correction).setOnClickListener(v -> requestCorrection());
         view.findViewById(R.id.row_assistant).setOnClickListener(v -> activity.openAssistant());
         view.findViewById(R.id.row_admin).setOnClickListener(v -> {
-            if (user != null && "admin".equals(user.role)) {
+            if (user != null && user.isStaff()) {
                 activity.openAdmin();
             } else {
                 Snackbar.make(view, R.string.profile_admin_restricted, Snackbar.LENGTH_LONG).show();
@@ -145,7 +145,7 @@ public class ProfileFragment extends Fragment implements TabFragment {
                 savePreferences(emergency.isChecked(), tax.isChecked(), checked));
 
         root.findViewById(R.id.row_admin).setVisibility(
-                user != null && "admin".equals(user.role) ? View.VISIBLE : View.GONE);
+                user != null && user.isStaff() ? View.VISIBLE : View.GONE);
     }
 
     private void savePreferences(boolean emergency, boolean tax, boolean health) {

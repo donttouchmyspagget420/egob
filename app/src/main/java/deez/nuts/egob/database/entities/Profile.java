@@ -37,6 +37,12 @@ public class Profile {
     @ColumnInfo(name = "biometric_enabled")
     public boolean biometricEnabled;
 
+    @ColumnInfo(name = "qr_enabled")
+    public boolean qrEnabled;
+
+    @ColumnInfo(name = "access_key_enabled")
+    public boolean accessKeyEnabled;
+
     @ColumnInfo(name = "two_factor_enabled")
     public boolean twoFactorEnabled;
 

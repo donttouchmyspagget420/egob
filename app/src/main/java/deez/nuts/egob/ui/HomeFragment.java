@@ -26,6 +26,7 @@ import deez.nuts.egob.data.RepositoryCallback;
 import deez.nuts.egob.database.entities.Notification;
 import deez.nuts.egob.database.entities.Profile;
 import deez.nuts.egob.database.entities.Service;
+import deez.nuts.egob.database.entities.User;
 import deez.nuts.egob.database.pojos.RequestWithService;
 import deez.nuts.egob.util.Formatters;
 import deez.nuts.egob.util.RequestStatus;
@@ -35,6 +36,7 @@ public class HomeFragment extends Fragment implements TabFragment {
 
     private AppRepository repository;
     private Profile profile;
+    private User user;
     private View root;
 
     public HomeFragment() {
@@ -67,17 +69,23 @@ public class HomeFragment extends Fragment implements TabFragment {
             view.findViewById(R.id.bulletin_card).setVisibility(View.GONE);
         });
 
+        view.findViewById(R.id.card_staff_access).setOnClickListener(v -> activity.openAdmin());
         view.findViewById(R.id.link_all_services).setOnClickListener(v -> activity.openServices());
         view.findViewById(R.id.link_filing).setOnClickListener(v ->
-                openServiceByTitle(getString(R.string.home_pay_taxes), getString(R.string.home_pay_taxes_detail)));
+                openServiceByTitle(getString(R.string.service_taxes_title),
+                        getString(R.string.home_pay_taxes_detail)));
         view.findViewById(R.id.quick_renew).setOnClickListener(v ->
-                openServiceByTitle(getString(R.string.detail_service_name), getString(R.string.detail_description)));
+                openServiceByTitle(getString(R.string.service_id_title),
+                        getString(R.string.home_renew_id_detail)));
         view.findViewById(R.id.quick_taxes).setOnClickListener(v ->
-                openServiceByTitle(getString(R.string.home_pay_taxes), getString(R.string.home_pay_taxes_detail)));
+                openServiceByTitle(getString(R.string.service_taxes_title),
+                        getString(R.string.home_pay_taxes_detail)));
         view.findViewById(R.id.quick_health).setOnClickListener(v ->
-                openServiceByTitle(getString(R.string.home_health_card), getString(R.string.home_health_card_detail)));
+                openServiceByTitle(getString(R.string.service_health_title),
+                        getString(R.string.home_health_card_detail)));
         view.findViewById(R.id.quick_appointments).setOnClickListener(v ->
-                openServiceByTitle(getString(R.string.home_appointments), getString(R.string.home_appointments_detail)));
+                openServiceByTitle(getString(R.string.service_appointments_title),
+                        getString(R.string.home_appointments_detail)));
 
         view.findViewById(R.id.link_track_history).setOnClickListener(v -> activity.openRequests());
         view.findViewById(R.id.card_active_request).setOnClickListener(v -> activity.openRequests());
@@ -102,7 +110,9 @@ public class HomeFragment extends Fragment implements TabFragment {
                     return;
                 }
                 profile = value.profile;
+                user = value.user;
                 bindProfile();
+                bindStaffAccess();
                 loadRequests();
                 loadNotifications();
             }
@@ -132,6 +142,23 @@ public class HomeFragment extends Fragment implements TabFragment {
         if (SessionManager.isBulletinDismissed(requireContext(), SessionManager.currentUserId(requireContext()))) {
             root.findViewById(R.id.bulletin_card).setVisibility(View.GONE);
         }
+    }
+
+    private void bindStaffAccess() {
+        if (root == null) {
+            return;
+        }
+        View card = root.findViewById(R.id.card_staff_access);
+        if (user == null || !user.isStaff()) {
+            card.setVisibility(View.GONE);
+            return;
+        }
+        boolean admin = "admin".equals(user.role);
+        card.setVisibility(View.VISIBLE);
+        ((TextView) root.findViewById(R.id.text_staff_badge)).setText(
+                admin ? R.string.home_staff_badge_admin : R.string.home_staff_badge_officer);
+        ((TextView) root.findViewById(R.id.text_staff_detail)).setText(
+                admin ? R.string.home_staff_admin_detail : R.string.home_staff_officer_detail);
     }
 
     private void loadRequests() {

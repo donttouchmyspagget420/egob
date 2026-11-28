@@ -14,6 +14,7 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -61,6 +62,7 @@ public final class AppRepository {
 
     private final Context appContext;
     private final Database database;
+    private final DatabaseAdmin databaseAdmin;
     private final ExecutorService ioExecutor;
     private final Handler mainHandler;
     private final boolean synchronous;
@@ -72,6 +74,7 @@ public final class AppRepository {
     private AppRepository(Context context, Database database, boolean synchronous) {
         this.appContext = context.getApplicationContext();
         this.database = database;
+        this.databaseAdmin = new DatabaseAdmin(database);
         this.synchronous = synchronous;
         this.ioExecutor = synchronous ? null : Executors.newSingleThreadExecutor();
         this.mainHandler = synchronous ? null : new Handler(Looper.getMainLooper());
@@ -160,6 +163,10 @@ public final class AppRepository {
             if (profile == null) {
                 throw new IllegalStateException("Tu perfil ciudadano no está disponible.");
             }
+            if (rememberDevice && !profile.accessKeyEnabled) {
+                profile.accessKeyEnabled = true;
+                database.profileDao().update(profile);
+            }
             SessionManager.start(appContext, user.id, rememberDevice);
             database.auditLogDao().insert(audit(user.id, "login", "user", user.id,
                     "Inicio de sesión verificado con contraseña."));
@@ -180,7 +187,38 @@ public final class AppRepository {
             if (user == null || profile == null) {
                 throw new IllegalStateException("La llave de acceso ya no es válida. Inicia sesión de nuevo.");
             }
+            if (!profile.accessKeyEnabled) {
+                throw new IllegalStateException("La llave de acceso fue revocada. Inicia sesión con tu NIN y clave.");
+            }
             SessionManager.start(appContext, user.id, true);
+            database.auditLogDao().insert(audit(user.id, "login_access_key", "user", user.id,
+                    "Inicio de sesión con llave de acceso vinculada."));
+            return new AuthSession(user, profile);
+        });
+    }
+
+    public void loginWithBiometric(RepositoryCallback<AuthSession> callback) {
+        execute(callback, () -> {
+            int userId = SessionManager.currentUserId(appContext);
+            if (userId <= 0) {
+                throw new IllegalStateException("No hay una llave de acceso vinculada a este dispositivo. "
+                        + "Inicia sesión con tu identidad nacional.");
+            }
+            User user = database.userDao().getById(userId);
+            Profile profile = user == null || user.profileId == null
+                    ? null : database.profileDao().getById(user.profileId);
+            if (user == null || profile == null) {
+                throw new IllegalStateException("La llave de acceso ya no es válida. Inicia sesión de nuevo.");
+            }
+            if (!profile.accessKeyEnabled) {
+                throw new IllegalStateException("La llave de acceso fue revocada. Inicia sesión con tu NIN y clave.");
+            }
+            if (!profile.biometricEnabled) {
+                throw new IllegalStateException("La biometría fue revocada. Inicia sesión con tu NIN y clave.");
+            }
+            SessionManager.start(appContext, user.id, true);
+            database.auditLogDao().insert(audit(user.id, "login_biometric", "user", user.id,
+                    "Inicio de sesión verificado con biometría."));
             return new AuthSession(user, profile);
         });
     }
@@ -235,6 +273,8 @@ public final class AppRepository {
             profile.memberSince = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
             profile.verified = true;
             profile.biometricEnabled = false;
+            profile.qrEnabled = true;
+            profile.accessKeyEnabled = false;
             profile.twoFactorEnabled = true;
             profile.emergencySms = true;
             profile.taxPush = true;
@@ -767,6 +807,123 @@ public final class AppRepository {
         execute(callback, () -> database.auditLogDao().countForActor(userId));
     }
 
+    public void getAccessOverview(int adminUserId,
+                                  RepositoryCallback<List<AdminUserAccess>> callback) {
+        execute(callback, () -> {
+            requireAdminOnly(adminUserId);
+            List<AdminUserAccess> result = new ArrayList<>();
+            for (User user : database.userDao().getAll()) {
+                if (user.profileId == null) {
+                    continue;
+                }
+                Profile profile = database.profileDao().getById(user.profileId);
+                if (profile != null) {
+                    result.add(new AdminUserAccess(user, profile));
+                }
+            }
+            result.sort((left, right) -> left.user.name.compareToIgnoreCase(right.user.name));
+            return result;
+        });
+    }
+
+    public void updateAccessControls(int adminUserId, int profileId, boolean qrEnabled,
+                                     boolean biometricEnabled, boolean accessKeyEnabled,
+                                     RepositoryCallback<Void> callback) {
+        execute(callback, () -> {
+            requireAdminOnly(adminUserId);
+            Profile profile = database.profileDao().getById(profileId);
+            if (profile == null) {
+                throw new IllegalArgumentException("El perfil ya no existe.");
+            }
+            profile.qrEnabled = qrEnabled;
+            profile.biometricEnabled = biometricEnabled;
+            profile.accessKeyEnabled = accessKeyEnabled;
+            database.profileDao().update(profile);
+            if (!accessKeyEnabled) {
+                User target = database.userDao().getByProfileId(profileId);
+                if (target != null) {
+                    SessionManager.revokeAccessKey(appContext, target.id);
+                }
+            }
+            database.auditLogDao().insert(audit(adminUserId, "access_controls", "profile",
+                    profileId, "QR=" + qrEnabled + ", biometría=" + biometricEnabled
+                            + ", llave=" + accessKeyEnabled));
+            return null;
+        });
+    }
+
+    public void revokeAllAccess(int adminUserId, int profileId,
+                                RepositoryCallback<Void> callback) {
+        execute(callback, () -> {
+            requireAdminOnly(adminUserId);
+            Profile profile = database.profileDao().getById(profileId);
+            if (profile == null) {
+                throw new IllegalArgumentException("El perfil ya no existe.");
+            }
+            profile.qrEnabled = false;
+            profile.biometricEnabled = false;
+            profile.accessKeyEnabled = false;
+            database.profileDao().update(profile);
+            User target = database.userDao().getByProfileId(profileId);
+            if (target != null) {
+                SessionManager.revokeAccessKey(appContext, target.id);
+            }
+            database.auditLogDao().insert(audit(adminUserId, "access_revoke_all", "profile",
+                    profileId, "QR, biometría y llave de acceso revocados."));
+            return null;
+        });
+    }
+
+    public void getDatabaseTables(int adminUserId,
+                                  RepositoryCallback<List<DbTableInfo>> callback) {
+        execute(callback, () -> {
+            requireAdminOnly(adminUserId);
+            return databaseAdmin.tables();
+        });
+    }
+
+    public void getTableData(int adminUserId, String table,
+                             RepositoryCallback<AdminTableData> callback) {
+        execute(callback, () -> {
+            requireAdminOnly(adminUserId);
+            return databaseAdmin.tableData(table);
+        });
+    }
+
+    public void insertDatabaseRow(int adminUserId, String table, Map<String, String> values,
+                                  RepositoryCallback<Long> callback) {
+        execute(callback, () -> {
+            requireAdminOnly(adminUserId);
+            long id = databaseAdmin.insert(table, values);
+            database.auditLogDao().insert(audit(adminUserId, "database_insert", table, (int) id,
+                    "Fila creada en " + table + "."));
+            return id;
+        });
+    }
+
+    public void updateDatabaseRow(int adminUserId, String table, String primaryKeyColumn,
+                                  String primaryKeyValue, Map<String, String> values,
+                                  RepositoryCallback<Void> callback) {
+        execute(callback, () -> {
+            requireAdminOnly(adminUserId);
+            databaseAdmin.update(table, primaryKeyColumn, primaryKeyValue, values);
+            database.auditLogDao().insert(audit(adminUserId, "database_update", table, 0,
+                    "Fila " + primaryKeyValue + " actualizada en " + table + "."));
+            return null;
+        });
+    }
+
+    public void deleteDatabaseRow(int adminUserId, String table, String primaryKeyColumn,
+                                  String primaryKeyValue, RepositoryCallback<Void> callback) {
+        execute(callback, () -> {
+            requireAdminOnly(adminUserId);
+            databaseAdmin.delete(table, primaryKeyColumn, primaryKeyValue);
+            database.auditLogDao().insert(audit(adminUserId, "database_delete", table, 0,
+                    "Fila " + primaryKeyValue + " eliminada de " + table + "."));
+            return null;
+        });
+    }
+
     // ---------------------------------------------------------------- profile
 
     public void getProfile(int userId, RepositoryCallback<Profile> callback) {
@@ -801,8 +958,15 @@ public final class AppRepository {
 
     private void requireAdmin(int userId) {
         User user = database.userDao().getById(userId);
-        if (user == null || !"admin".equals(user.role)) {
+        if (user == null || !user.isStaff()) {
             throw new SecurityException("No tienes permisos de administración.");
+        }
+    }
+
+    private void requireAdminOnly(int userId) {
+        User user = database.userDao().getById(userId);
+        if (user == null || !user.isAdmin()) {
+            throw new SecurityException("Solo un administrador puede realizar esta acción.");
         }
     }
 
@@ -917,10 +1081,15 @@ public final class AppRepository {
                 "Camino del Valle 8, Sector 5", "CP-41005", "30 nov 1979",
                 "Distrito 04 - Sector Valle Occidental", "Casado", "Salón Vecinal #12",
                 "Nivel 3", "2011", "DK", true);
+        Profile carlos = profile("Carlos Méndez", "NAT-5521-7744-31", "+1 (555) 442-7788",
+                "Avenida de los Oficios 210, Sector 1", "CP-10024", "22 feb 1987",
+                "Distrito 01 - Territorio Capital", "Casado", "Precinto Metropolitano #14-A",
+                "Nivel 3", "2015", "CM", true);
         int elenaProfile = (int) database.profileDao().insert(elena);
         int marcusProfile = (int) database.profileDao().insert(marcus);
         int aishaProfile = (int) database.profileDao().insert(aisha);
         int davidProfile = (int) database.profileDao().insert(david);
+        int carlosProfile = (int) database.profileDao().insert(carlos);
 
         Department civil = department("Registro Civil");
         Department transport = department("Transporte y Vehículos");
@@ -937,7 +1106,7 @@ public final class AppRepository {
 
         int citizenRole = (int) database.roleDao().insert(role("citizen"));
         int adminRole = (int) database.roleDao().insert(role("admin"));
-        database.roleDao().insert(role("officer"));
+        int officerRole = (int) database.roleDao().insert(role("officer"));
 
         User elenaUser = user("Elena Vargas", "elena.vargas@egob.gob", "egob2026",
                 "NAT-8829-4102-X", "admin", elenaProfile, now - 400L * 24 * 60 * 60 * 1000);
@@ -947,16 +1116,25 @@ public final class AppRepository {
                 "NAT-6630-1182-40", "citizen", aishaProfile, now - 280L * 24 * 60 * 60 * 1000);
         User davidUser = user("David Kim", "david.kim@egob.gob", "egob2026",
                 "NAT-4471-9082-15", "citizen", davidProfile, now - 250L * 24 * 60 * 60 * 1000);
+        User carlosUser = user("Carlos Méndez", "carlos.mendez@egob.gob", "egob2026",
+                "NAT-5521-7744-31", "officer", carlosProfile, now - 220L * 24 * 60 * 60 * 1000);
         int elenaId = (int) database.userDao().insert(elenaUser);
         int marcusId = (int) database.userDao().insert(marcusUser);
         int aishaId = (int) database.userDao().insert(aishaUser);
         int davidId = (int) database.userDao().insert(davidUser);
+        int carlosId = (int) database.userDao().insert(carlosUser);
 
         Worker worker = new Worker();
         worker.userId = elenaId;
         worker.departmentId = civilId;
         worker.roleId = adminRole;
         database.workerDao().insert(worker);
+
+        Worker officerWorker = new Worker();
+        officerWorker.userId = carlosId;
+        officerWorker.departmentId = civilId;
+        officerWorker.roleId = officerRole;
+        database.workerDao().insert(officerWorker);
 
         Service passport = service(appContext.getString(R.string.service_passport_title),
                 appContext.getString(R.string.service_passport_desc),
@@ -995,22 +1173,28 @@ public final class AppRepository {
                 "24 horas", "1 año",
                 "Título o registro vehicular, comprobante de residencia e historial municipal limpio.",
                 "Despacho digital", transportId, true);
-        Service taxes = service("Declaración de impuestos nacionales",
-                "Presenta tu declaración prellenada del ejercicio fiscal y revisa créditos aplicables.",
-                "Autoridad de Ingresos", "taxes", "Ejercicio 2024-25", 0,
+        Service taxes = service(appContext.getString(R.string.service_taxes_title),
+                appContext.getString(R.string.service_taxes_desc),
+                appContext.getString(R.string.service_taxes_authority), "taxes", "Ejercicio 2024-25", 0,
                 "8 minutos", "Anual",
                 "Formulario prellenado y comprobantes de ingresos.",
                 "Portal digital", revenueId, true);
-        Service healthCard = service("Tarjeta de salud y vacunas",
-                "Consulta beneficios, vacunas y citas de atención primaria.",
-                "Servicio Nacional de Salud", "health", null, 0,
+        Service healthCard = service(appContext.getString(R.string.service_health_title),
+                appContext.getString(R.string.service_health_desc),
+                appContext.getString(R.string.service_health_authority), "health", null, 0,
                 "5 días", "2 años",
                 "NIN y comprobante de residencia.", "Billetera digital", healthId, true);
-        Service appointments = service("Citas consulares y de registro",
-                "Reserva citas para trámites consulares, registro civil y atención presencial.",
-                "Oficina de Atención Ciudadana", "civil", null, 0,
+        Service appointments = service(appContext.getString(R.string.service_appointments_title),
+                appContext.getString(R.string.service_appointments_desc),
+                appContext.getString(R.string.service_appointments_authority), "civil", null, 0,
                 "48 horas", "Cita única",
                 "NIN y motivo de la cita.", "Confirmación digital", civilId, true);
+        Service identityRenewal = service(appContext.getString(R.string.service_id_title),
+                appContext.getString(R.string.service_id_desc),
+                appContext.getString(R.string.service_id_authority), "civil", null, 15,
+                "2 días hábiles", "10 años",
+                "NIN, fotografía reciente y comprobante de domicilio.",
+                "Credencial digital o recogida en oficina", civilId, true);
         Service housingService = service(appContext.getString(R.string.service_housing_title),
                 appContext.getString(R.string.service_housing_desc),
                 appContext.getString(R.string.service_housing_authority), "housing", null, 20,
@@ -1027,6 +1211,7 @@ public final class AppRepository {
         int healthCardId = (int) database.serviceDao().insert(healthCard);
         int appointmentsId = (int) database.serviceDao().insert(appointments);
         int housingServiceId = (int) database.serviceDao().insert(housingService);
+        database.serviceDao().insert(identityRenewal);
 
         Request passportRequest = request(elenaId, passportId, civilId, RequestStatus.IN_PROGRESS,
                 "#REQ-88319", 45, "Mensajería segura", now - 6L * 24 * 60 * 60 * 1000,
@@ -1156,6 +1341,8 @@ public final class AppRepository {
         profile.avatarInitials = initials;
         profile.verified = verified;
         profile.biometricEnabled = true;
+        profile.qrEnabled = true;
+        profile.accessKeyEnabled = true;
         profile.twoFactorEnabled = true;
         profile.emergencySms = true;
         profile.taxPush = true;

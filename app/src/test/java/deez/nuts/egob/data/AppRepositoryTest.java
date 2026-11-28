@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import deez.nuts.egob.R;
 import deez.nuts.egob.database.Database;
 import deez.nuts.egob.database.entities.Document;
 import deez.nuts.egob.database.entities.Profile;
@@ -143,6 +144,36 @@ public class AppRepositoryTest {
         for (String expected : new String[]{"civil", "transport", "housing", "taxes", "health"}) {
             assertTrue("Falta la categoría " + expected, categories.contains(expected));
         }
+    }
+
+    @Test
+    public void homeQuickActionsResolveRealServices() {
+        String[] titles = {
+                context.getString(R.string.service_id_title),
+                context.getString(R.string.service_taxes_title),
+                context.getString(R.string.service_health_title),
+                context.getString(R.string.service_appointments_title)
+        };
+        for (String title : titles) {
+            Result<Service> result = new Result<>();
+            repository.findServiceByTitle(title, result);
+            assertNull("No se encontró: " + title, result.error);
+            assertNotNull(result.value);
+            assertEquals(title, result.value.name);
+        }
+    }
+
+    @Test
+    public void workerCanAuthenticateAndUseAdminActions() {
+        AuthSession worker = login("NAT-5521-7744-31");
+
+        assertEquals("officer", worker.user.role);
+        assertTrue(worker.user.isStaff());
+
+        Result<Integer> reassigned = new Result<>();
+        repository.reassignQueue(worker.user.id, "Agente de turno", reassigned);
+        assertNull(reassigned.error);
+        assertNotNull(reassigned.value);
     }
 
     @Test

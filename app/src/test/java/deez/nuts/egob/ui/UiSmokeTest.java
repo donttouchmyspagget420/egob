@@ -1,5 +1,6 @@
 package deez.nuts.egob.ui;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
@@ -145,5 +146,91 @@ public class UiSmokeTest {
         holder.itemView.findViewById(R.id.btn_bookmark).performClick();
         holder.itemView.performClick();
         shadowOf(Looper.getMainLooper()).idle();
+    }
+
+    @Test
+    public void adminHomeEntryPointOpensOperationsPanel() {
+        Context context = RuntimeEnvironment.getApplication();
+        SessionManager.clear(context);
+        AppRepository.get(context).seedBlocking();
+        SessionManager.start(context, 1, true);
+
+        ActivityController<MainActivity> controller =
+                Robolectric.buildActivity(MainActivity.class).setup();
+        MainActivity activity = controller.get();
+        shadowOf(Looper.getMainLooper()).idle();
+
+        View staffCard = activity.findViewById(R.id.card_staff_access);
+        assertNotNull("Staff access card", staffCard);
+        assertEquals(View.VISIBLE, staffCard.getVisibility());
+
+        staffCard.performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        assertNotNull("Operations panel", activity.findViewById(R.id.list_admin_requests));
+    }
+
+    @Test
+    public void workerHomeEntryPointShowsOfficerRoleAndOpensOperationsPanel() {
+        Context context = RuntimeEnvironment.getApplication();
+        SessionManager.clear(context);
+        AppRepository.get(context).seedBlocking();
+        SessionManager.start(context, 5, true);
+
+        ActivityController<MainActivity> controller =
+                Robolectric.buildActivity(MainActivity.class).setup();
+        MainActivity activity = controller.get();
+        shadowOf(Looper.getMainLooper()).idle();
+
+        View staffCard = activity.findViewById(R.id.card_staff_access);
+        assertNotNull("Staff access card", staffCard);
+        assertEquals(View.VISIBLE, staffCard.getVisibility());
+        assertEquals("OFICIAL",
+                ((android.widget.TextView) activity.findViewById(R.id.text_staff_badge))
+                        .getText().toString());
+
+        staffCard.performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        assertNotNull("Operations panel", activity.findViewById(R.id.list_admin_requests));
+    }
+
+    @Test
+    public void workerProfileEntryPointOpensOperationsPanel() {
+        Context context = RuntimeEnvironment.getApplication();
+        SessionManager.clear(context);
+        AppRepository.get(context).seedBlocking();
+        SessionManager.start(context, 5, true);
+
+        ActivityController<MainActivity> controller =
+                Robolectric.buildActivity(MainActivity.class).setup();
+        MainActivity activity = controller.get();
+        shadowOf(Looper.getMainLooper()).idle();
+
+        activity.openProfile();
+        shadowOf(Looper.getMainLooper()).idle();
+
+        View adminRow = activity.findViewById(R.id.row_admin);
+        assertNotNull("Profile operations row", adminRow);
+        assertEquals(View.VISIBLE, adminRow.getVisibility());
+
+        adminRow.performClick();
+        shadowOf(Looper.getMainLooper()).idle();
+        assertNotNull("Operations panel", activity.findViewById(R.id.list_admin_requests));
+    }
+
+    @Test
+    public void citizenDoesNotSeeStaffEntryPoint() {
+        Context context = RuntimeEnvironment.getApplication();
+        SessionManager.clear(context);
+        AppRepository.get(context).seedBlocking();
+        SessionManager.start(context, 2, true);
+
+        ActivityController<MainActivity> controller =
+                Robolectric.buildActivity(MainActivity.class).setup();
+        MainActivity activity = controller.get();
+        shadowOf(Looper.getMainLooper()).idle();
+
+        View staffCard = activity.findViewById(R.id.card_staff_access);
+        assertNotNull("Staff access card", staffCard);
+        assertEquals(View.GONE, staffCard.getVisibility());
     }
 }

@@ -35,4 +35,14 @@ public class User {
 
     @ColumnInfo(name = "created_at")
     public long createdAt;
+
+    /** Admin and officer accounts can open the civic operations panel. */
+    public boolean isStaff() {
+        return "admin".equals(role) || "officer".equals(role);
+    }
+
+    /** Only administrators can browse the database or revoke access methods. */
+    public boolean isAdmin() {
+        return "admin".equals(role);
+    }
 }

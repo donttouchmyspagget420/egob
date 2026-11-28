@@ -73,10 +73,14 @@ public class AdminFragment extends Fragment {
                 if (!isAdded() || root == null) {
                     return;
                 }
-                if (!"admin".equals(value.user.role)) {
+                if (!value.user.isStaff()) {
                     showRestricted();
                     return;
                 }
+                ((MaterialToolbar) root.findViewById(R.id.toolbar)).setSubtitle(
+                        "admin".equals(value.user.role)
+                                ? R.string.admin_gateway_admin
+                                : R.string.admin_gateway_officer);
                 admin = value.user;
                 loadStats();
                 loadQueue();
